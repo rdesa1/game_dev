@@ -6,7 +6,7 @@ public class PlayerController2D : MonoBehaviour
      // Public variables
      public float walkSpeed = 5f; // The speed at which the player moves
      public float frameRate;
-     public bool canMoveDiagonally = true; // Controls whether the player can move diagonally
+     public Transform movePoint; //Essentially the object that determines whether a player can move or not.
 
      // Reference to the Rigidbody2D component attached to the player
      public Rigidbody2D body;
@@ -19,28 +19,51 @@ public class PlayerController2D : MonoBehaviour
      public List<Sprite> wSprites;
 
      Vector2 direction; // Stores the direction of player movement
-     
+
+     public LayerMask whatStopsMovement; //Checks which layer prevents the player to move into that area.
+
      void Start()
      {
-         
+          //I think this is where the move point spawns on start. 
+          //We can adjust this later, but for now it's set to null.
+          movePoint.parent = null;
      }
 
      public void Update()
      {
-          // get direction of input
-          direction = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
+          //Synchronizes all movement to for all systems.
+          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
 
-          // set walk based on direction
-          body.linearVelocity = direction * walkSpeed;
+          //Locks movement to either 1 unit veritcally or horizontally.
+          if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
+          {
+               if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1)
+               {
+                    //Checks collision ahead. If there's nothing, the player can move horizontally.
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.2f, whatStopsMovement))
+                    {
+                         movePoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
+                    }
+               }
+
+               else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1)
+               {
+                    //Checks collision ahead. If there's nothing, the player can move vertically.
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f), 0.2f, whatStopsMovement))
+                    {
+                         movePoint.position += new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f);
+                    }
+               }
+          }
 
           // get sprite that faces same direction as input
-          List<Sprite> directionSprites =  GetSpriteDirection();
+          List<Sprite> directionSprites = GetSpriteDirection();
 
-          if (directionSprites != null )
+          if (directionSprites != null)
           {
                spriteRenderer.sprite = directionSprites[0];
-          } 
-     } 
+          }
+     }
 
      // determine the direction the character should face based on directional input
      List<Sprite> GetSpriteDirection()
@@ -66,7 +89,7 @@ public class PlayerController2D : MonoBehaviour
 
           return selectedSprites;
      }
-     
-     
+
+
 
 }
