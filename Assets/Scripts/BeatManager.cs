@@ -19,20 +19,13 @@ public class BeatManager : MonoBehaviour
      // Update is called once per frame
      void Update()
      {
-          Synchronize(music);
-     }
-
-     void Synchronize(AudioSource music)
-     {
           foreach (Intervals interval in intervals)
           {
-               float sampledTime = (music.timeSamples / music.clip.frequency * interval.GetIntervalLength(bpm));
+               float sampledTime = (music.timeSamples / (music.clip.frequency * interval.GetIntervalLength(bpm)));
                interval.CheckForNewInterval(sampledTime);
-
+               
           }
-
      }
-
 }
 
 [System.Serializable]
@@ -53,6 +46,7 @@ public class Intervals
           {
                lastInterval = Mathf.FloorToInt(interval);
                trigger.Invoke();
+               Debug.Log("This is a beat");
           }
      }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+
 public class PlayerController2D : MonoBehaviour
 {
      // Public variables
@@ -27,10 +28,13 @@ public class PlayerController2D : MonoBehaviour
           //I think this is where the move point spawns on start. 
           //We can adjust this later, but for now it's set to null.
           movePoint.parent = null;
+
      }
 
      public void Update()
      {
+          //Debug.Log("This is a frame");
+
           //Synchronizes all movement to for all systems.
           transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
 
@@ -63,6 +67,7 @@ public class PlayerController2D : MonoBehaviour
           {
                spriteRenderer.sprite = directionSprites[0];
           }
+
      }
 
      // determine the direction the character should face based on directional input
@@ -89,7 +94,5 @@ public class PlayerController2D : MonoBehaviour
 
           return selectedSprites;
      }
-
-
 
 }
