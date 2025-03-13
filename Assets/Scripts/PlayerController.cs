@@ -23,22 +23,53 @@ public class PlayerController2D : MonoBehaviour
 
      public LayerMask whatStopsMovement; //Checks which layer prevents the player to move into that area.
 
+
      void Start()
      {
           //I think this is where the move point spawns on start. 
           //We can adjust this later, but for now it's set to null.
           movePoint.parent = null;
-
+          
      }
 
      public void Update()
      {
           //Debug.Log("This is a frame");
+          CheckInput(PreciseMovementWindow.preciseMovementIsOpen);
+     }
 
+
+     // determine the direction the character should face based on directional input
+     List<Sprite> GetSpriteDirection()
+     {
+          List<Sprite> selectedSprites = null;
+
+          if (direction.y > 0) // north
+          {
+               selectedSprites = nSprites;
+          }
+          else if (direction.y < 0) // south
+          {
+               selectedSprites = sSprites;
+          }
+          else if (direction.x > 0) // east
+          {
+               selectedSprites = eSprites;
+          }
+          else if (direction.x < 0) // west
+          {
+               selectedSprites = wSprites;
+          }
+
+          return selectedSprites;
+     }
+
+     public void MoveCharacter()
+     {
           //Synchronizes all movement to for all systems.
           transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
 
-          //Locks movement to either 1 unit veritcally or horizontally.
+          //Locks movement to either 1 unit vertically or horizontally.
           if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
           {
                if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1)
@@ -67,32 +98,17 @@ public class PlayerController2D : MonoBehaviour
           {
                spriteRenderer.sprite = directionSprites[0];
           }
-
      }
 
-     // determine the direction the character should face based on directional input
-     List<Sprite> GetSpriteDirection()
+
+     private void CheckInput(bool preciseMovementIsOpen)
      {
-          List<Sprite> selectedSprites = null;
-
-          if (direction.y > 0) // north
+          Debug.Log("From CheckInput: " + preciseMovementIsOpen);
+          if ((Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)
+               || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+               && preciseMovementIsOpen)
           {
-               selectedSprites = nSprites;
+               Debug.Log("Precise move!");
           }
-          else if (direction.y < 0) // south
-          {
-               selectedSprites = sSprites;
-          }
-          else if (direction.x > 0) // east
-          {
-               selectedSprites = eSprites;
-          }
-          else if (direction.x < 0) // west
-          {
-               selectedSprites = wSprites;
-          }
-
-          return selectedSprites;
      }
-
 }

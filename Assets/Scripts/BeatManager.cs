@@ -28,6 +28,7 @@ public class BeatManager : MonoBehaviour
      }
 }
 
+
 [System.Serializable]
 public class Intervals
 {
@@ -46,7 +47,7 @@ public class Intervals
           {
                lastInterval = Mathf.FloorToInt(interval);
                trigger.Invoke();
-               Debug.Log("This is a beat");
+               //Debug.Log("This is a beat");
           }
      }
 }
