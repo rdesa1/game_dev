@@ -26,7 +26,7 @@ public class BeatManager : MonoBehaviour
      {
           foreach (Intervals interval in intervals)
           {
-               float sampledTime = (music.timeSamples / music.clip.frequency * interval.GetIntervalLength(bpm));
+               float sampledTime = (music.timeSamples / (music.clip.frequency * interval.GetIntervalLength(bpm)));
                interval.CheckForNewInterval(sampledTime);
 
           }
