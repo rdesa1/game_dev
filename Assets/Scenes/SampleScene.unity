@@ -227,6 +227,7 @@ MonoBehaviour:
   whatStopsMovement:
     serializedVersion: 2
     m_Bits: 0
+  canMove: 0
 --- !u!61 &314080730
 BoxCollider2D:
   m_ObjectHideFlags: 0
