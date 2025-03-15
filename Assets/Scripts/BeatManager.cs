@@ -30,6 +30,7 @@ public class BeatManager : MonoBehaviour
                float sampledTime = (music.timeSamples / (music.clip.frequency * interval.GetIntervalLength(bpm)));
                bool newBeat = interval.CheckForNewInterval(sampledTime);
 
+
                if (newBeat)
                {
                     // Store the beat time and broadcast the event

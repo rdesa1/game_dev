@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.Scripting.APIUpdating;
 
 public class PlayerController2D : MonoBehaviour
 {
@@ -160,6 +161,7 @@ public class PlayerController2D : MonoBehaviour
           }
      }
 
+     // determine the direction the character should face based on directional input
      List<Sprite> GetSpriteDirection()
      {
           if (direction.y > 0) return nSprites;
