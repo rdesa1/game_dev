@@ -23,6 +23,10 @@ public class PlayerController2D : MonoBehaviour
 
      public LayerMask whatStopsMovement; // Checks which layer prevents the player to move into that area.
 
+     public int playerID;
+
+     private Gamepad assignedGamepad; // Assigned gamepad for this player
+
      void Start()
      {
           // Move point starts detached from the player
@@ -42,7 +46,7 @@ public class PlayerController2D : MonoBehaviour
 
           if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
           {
-               // Get input from keyboard or controller
+               // Get input from the assigned controller
                float moveX = GetHorizontalInput();
                float moveY = GetVerticalInput();
 
@@ -72,38 +76,38 @@ public class PlayerController2D : MonoBehaviour
           }
      }
 
-     // Get horizontal movement input from keyboard & controller
+     // Get horizontal movement input from the assigned controller
      private float GetHorizontalInput()
      {
-          float input = Input.GetAxisRaw("Horizontal"); // Keyboard input
-
-          if (Gamepad.current != null)
+          if (assignedGamepad != null) // Only use the assigned gamepad
           {
-               input = Gamepad.current.leftStick.x.ReadValue(); // Left Stick
+               float input = assignedGamepad.leftStick.x.ReadValue(); // Left Stick
                if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
                {
-                    input = Gamepad.current.dpad.x.ReadValue();
+                    input = assignedGamepad.dpad.x.ReadValue();
                }
+               return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
           }
 
-          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+          // If no assigned controller and single-player mode is active, allow keyboard input
+          return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Horizontal") : 0;
      }
 
-     // Get vertical movement input from keyboard & controller
+     // Get vertical movement input from the assigned controller
      private float GetVerticalInput()
      {
-          float input = Input.GetAxisRaw("Vertical"); // Keyboard input
-
-          if (Gamepad.current != null)
+          if (assignedGamepad != null) // Only use the assigned gamepad
           {
-               input = Gamepad.current.leftStick.y.ReadValue(); // Left Stick
+               float input = assignedGamepad.leftStick.y.ReadValue(); // Left Stick
                if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
                {
-                    input = Gamepad.current.dpad.y.ReadValue();
+                    input = assignedGamepad.dpad.y.ReadValue();
                }
+               return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
           }
 
-          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+          // If no assigned controller and single-player mode is active, allow keyboard input
+          return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Vertical") : 0;
      }
 
      // Determine the direction the character should face based on movement
@@ -129,5 +133,36 @@ public class PlayerController2D : MonoBehaviour
           }
 
           return selectedSprites;
+     }
+
+     public void Respawn()
+     {
+          PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+
+          if (playerManager.spawnPoints.Count > 0) // Use .Count instead of .Length
+          {
+               int spawnIndex = playerID % playerManager.spawnPoints.Count; // Use .Count
+               transform.position = (Vector3)playerManager.spawnPoints[spawnIndex]; // No .position needed
+               Debug.Log($"Player {playerID + 1} respawned at {transform.position}");
+          }
+          else
+          {
+               Debug.LogError("No spawn points assigned in PlayerManager!");
+          }
+     }
+
+     // Assign a specific controller to this player
+     public void AssignController(string gamepadName)
+     {
+          foreach (Gamepad gamepad in Gamepad.all)
+          {
+               if (gamepad.name == gamepadName)
+               {
+                    assignedGamepad = gamepad;
+                    Debug.Log($"Player {playerID + 1} assigned to {gamepad.name}");
+                    return;
+               }
+          }
+          Debug.LogWarning($"Gamepad {gamepadName} not found for Player {playerID + 1}");
      }
 }

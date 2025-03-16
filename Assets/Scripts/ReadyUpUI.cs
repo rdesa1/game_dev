@@ -12,6 +12,7 @@ public class ReadyUpUI : MonoBehaviour
      public Button startGameButton;
 
      private Dictionary<int, Gamepad> readyPlayers = new Dictionary<int, Gamepad>(); // Tracks unique controllers
+     public static Dictionary<int, string> RegisteredPlayers = new Dictionary<int, string>();
      private const int MaxPlayers = 4;
      private int minPlayersRequired = 2;
 
@@ -19,6 +20,7 @@ public class ReadyUpUI : MonoBehaviour
      {
           startGameButton.interactable = false;
           UpdatePlayerCountText();
+          Debug.Log($"Registered Players: {ReadyUpUI.RegisteredPlayers.Count}");
      }
 
      void Update()
@@ -44,21 +46,18 @@ public class ReadyUpUI : MonoBehaviour
 
      private void RegisterPlayer(Gamepad gamepad)
      {
-          // Check if this gamepad is already registered
           if (!readyPlayers.ContainsValue(gamepad) && readyPlayers.Count < MaxPlayers)
           {
-               int playerId = readyPlayers.Count; // Assign sequential player numbers
-               readyPlayers[playerId] = gamepad; // Store controller reference
+               int playerId = readyPlayers.Count;
+               readyPlayers[playerId] = gamepad;
+
+               // Store player ID and controller name before switching scenes
+               RegisteredPlayers[playerId] = gamepad.name;
 
                Debug.Log($"Player {playerId + 1} is ready with {gamepad.name}!");
 
                UpdatePlayerCountText();
-
-               // Enable start button if enough players are ready
-               if (readyPlayers.Count >= minPlayersRequired)
-               {
-                    startGameButton.interactable = true;
-               }
+               startGameButton.interactable = readyPlayers.Count >= minPlayersRequired;
           }
      }
 
@@ -78,6 +77,17 @@ public class ReadyUpUI : MonoBehaviour
      private void StartGame(int playerCount)
      {
           Debug.Log($"Starting game with {playerCount} players!");
-          SceneManager.LoadScene("SampleScene"); // Load the gameplay scene
+
+          // Store controllers before switching scenes
+          PlayerDataStorage.RegisteredControllers = new Dictionary<int, Gamepad>(readyPlayers);
+
+          SceneManager.LoadScene("SampleScene"); // Load gameplay scene
      }
+
+
+     public static class PlayerDataStorage
+     {
+          public static Dictionary<int, Gamepad> RegisteredControllers = new Dictionary<int, Gamepad>();
+     }
+
 }

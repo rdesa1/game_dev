@@ -57,4 +57,22 @@ public class GridManager : MonoBehaviour
           return null;
      }
 
+     public List<Vector2> GetSpawnPoints()
+     {
+          if (_width < 2 || _height < 2)
+          {
+               Debug.LogError("Grid size too small! Cannot assign spawn points.");
+               return new List<Vector2>();
+          }
+
+          return new List<Vector2>
+          {
+             new Vector2(1, 1),                   // Bottom-left (inside the border)
+             new Vector2(_width - 2, 1),          // Bottom-right (inside the border)
+             new Vector2(1, _height - 2),         // Top-left (inside the border)
+             new Vector2(_width - 2, _height - 2) // Top-right (inside the border)
+          };
+     }
+
+
 }
