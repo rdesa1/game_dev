@@ -23,10 +23,13 @@ public class PlayerController2D : MonoBehaviour
 
      public LayerMask whatStopsMovement; // Checks which layer prevents the player to move into that area.
 
+     private PlayerRespawn respawnHandler;
+
      void Start()
      {
           // Move point starts detached from the player
           movePoint.parent = null;
+          respawnHandler = GetComponent<PlayerRespawn>(); // Get PlayerRespawn component
      }
 
      // Update is called once per frame
@@ -130,4 +133,26 @@ public class PlayerController2D : MonoBehaviour
 
           return selectedSprites;
      }
+
+     public void OnHit()
+     {
+          Debug.Log("Player hit detected.");
+
+          if (respawnHandler == null)
+          {
+               Debug.LogError("respawnHandler is NULL!");
+               return;
+          }
+
+          if (respawnHandler.IsInvincible())
+          {
+               Debug.Log("Player is invincible, no respawn.");
+               return;
+          }
+
+          Debug.Log("Respawn initiated.");
+          respawnHandler.Respawn();
+     }
+
+
 }
