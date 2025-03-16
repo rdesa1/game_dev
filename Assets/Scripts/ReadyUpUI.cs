@@ -11,7 +11,7 @@ public class ReadyUpUI : MonoBehaviour
      public TMP_Text playerCountText;
      public Button startGameButton;
 
-     private HashSet<int> readyPlayers = new HashSet<int>();
+     private Dictionary<int, Gamepad> readyPlayers = new Dictionary<int, Gamepad>(); // Tracks unique controllers
      private const int MaxPlayers = 4;
      private int minPlayersRequired = 2;
 
@@ -28,15 +28,29 @@ public class ReadyUpUI : MonoBehaviour
           {
                StartGame(1);
           }
+
+          // Detect controller Start button (PS5: Options button)
+          if (Gamepad.all.Count > 0)
+          {
+               foreach (Gamepad gamepad in Gamepad.all)
+               {
+                    if (gamepad.startButton.wasPressedThisFrame)
+                    {
+                         RegisterPlayer(gamepad);
+                    }
+               }
+          }
      }
 
-     public void OnPlayerReady(PlayerInput playerInput)
+     private void RegisterPlayer(Gamepad gamepad)
      {
-          int playerId = playerInput.playerIndex;
-          if (!readyPlayers.Contains(playerId))
+          // Check if this gamepad is already registered
+          if (!readyPlayers.ContainsValue(gamepad) && readyPlayers.Count < MaxPlayers)
           {
-               readyPlayers.Add(playerId);
-               Debug.Log($"Player {playerId + 1} is ready!");
+               int playerId = readyPlayers.Count; // Assign sequential player numbers
+               readyPlayers[playerId] = gamepad; // Store controller reference
+
+               Debug.Log($"Player {playerId + 1} is ready with {gamepad.name}!");
 
                UpdatePlayerCountText();
 
@@ -64,6 +78,6 @@ public class ReadyUpUI : MonoBehaviour
      private void StartGame(int playerCount)
      {
           Debug.Log($"Starting game with {playerCount} players!");
-          SceneManager.LoadScene("SampleScene"); // Replace with your actual scene name
+          SceneManager.LoadScene("SampleScene"); // Load the gameplay scene
      }
 }
