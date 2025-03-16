@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private Color _baseColor, offSetColor; //The two main colors of the tiles
-    [SerializeField] private SpriteRenderer _renderer; //The renderer creating tiles for the player to see.
+     [SerializeField] private Color baseColor, offSetColor, borderColor; //The main colors of the tiles
+     [SerializeField] private SpriteRenderer renderer; //The renderer creating tiles for the player to see.
 
-    //Creates a tile. The Tile's color depends on isOffset.
-    public void Init(bool isOffset)
-    {
-        _renderer.color = isOffset ? _baseColor : offSetColor;
-    }
+
+     public void Init(bool isOffset, bool isBorder = false) //Creates a tile. The Tile's color depends on isOffset and if it's a border tile.
+     {
+          renderer.color = isBorder ? borderColor : (isOffset ? baseColor : offSetColor);
+
+          if (isBorder) //Makes the border tiles on the Border Layer Mask
+          {
+               gameObject.layer = LayerMask.NameToLayer("Border");
+
+               //Adds collision to the border tile
+               BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
+               collider.isTrigger = true;
+          }
+     }
 }
