@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-     public static ScoreManager Instance { get; private set; }
+     public static ScoreManager Instance { get; private set; } // Singleton instance
 
-     private Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>();
+     private Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
 
      private void Awake()
      {
+          // Ensure only one instance of ScoreManager exists
           if (Instance == null)
           {
                Instance = this;
@@ -19,20 +20,22 @@ public class ScoreManager : MonoBehaviour
           }
      }
 
+     // Increments the score for a given player
      public void AddScore(GameObject player)
      {
           if (playerScores.ContainsKey(player))
           {
-               playerScores[player]++;
+               playerScores[player]++; // Increase existing player's score
           }
           else
           {
-               playerScores[player] = 1;
+               playerScores[player] = 1; // Initialize score for new player
           }
 
           Debug.Log($"{player.name} now has {playerScores[player]} points.");
      }
 
+     // Retrieves the current score of a player
      public int GetScore(GameObject player)
      {
           return playerScores.ContainsKey(player) ? playerScores[player] : 0;
