@@ -170,4 +170,4 @@ MonoBehaviour:
   destroyTime: 5
   whatDestroysBullet:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
