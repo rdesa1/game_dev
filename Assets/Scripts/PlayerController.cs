@@ -1,18 +1,18 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Scripting.APIUpdating;
+using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
      // Public variables
      public float walkSpeed = 5f; // The speed at which the player moves
      public float frameRate;
-     public Transform movePoint; //Essentially the object that determines whether a player can move or not.
+     public Transform movePoint; // Object that determines whether a player can move
 
      // Reference to the Rigidbody2D component attached to the player
      public Rigidbody2D body;
 
-     // reference the sprites per direction
+     // Reference the sprites per direction
      public SpriteRenderer spriteRenderer;
      public List<Sprite> nSprites;
      public List<Sprite> sSprites;
@@ -21,82 +21,113 @@ public class PlayerController2D : MonoBehaviour
 
      Vector2 direction; // Stores the direction of player movement
 
-     public LayerMask whatStopsMovement; //Checks which layer prevents the player to move into that area.
+     public LayerMask whatStopsMovement; // Checks which layer prevents the player to move into that area.
 
      void Start()
      {
-          //I think this is where the move point spawns on start. 
-          //We can adjust this later, but for now it's set to null.
+          // Move point starts detached from the player
           movePoint.parent = null;
      }
 
+     // Update is called once per frame
      public void Update()
      {
-          
+
      }
 
      public void MoveCharacter()
      {
-          //Synchronizes all movement to for all systems.
+          // Synchronize movement across all input systems.
           transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
 
-          //Locks movement to either 1 unit veritcally or horizontally.
-          if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
+          if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
           {
-               if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1)
+               // Get input from keyboard or controller
+               float moveX = GetHorizontalInput();
+               float moveY = GetVerticalInput();
+
+               // Process horizontal movement
+               if (Mathf.Abs(moveX) == 1)
                {
-                    //Checks collision ahead. If there's nothing, the player can move horizontally.
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.2f, whatStopsMovement))
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
+                         movePoint.position += new Vector3(moveX, 0f, 0f);
                     }
                }
-
-               else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1)
+               // Process vertical movement
+               else if (Mathf.Abs(moveY) == 1)
                {
-                    //Checks collision ahead. If there's nothing, the player can move vertically.
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f), 0.2f, whatStopsMovement))
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f);
+                         movePoint.position += new Vector3(0f, moveY, 0f);
                     }
                }
           }
 
-          // get sprite that faces same direction as input
+          // Get sprite that faces the same direction as input
           List<Sprite> directionSprites = GetSpriteDirection();
-
           if (directionSprites != null)
           {
                spriteRenderer.sprite = directionSprites[0];
           }
      }
 
+     // Get horizontal movement input from keyboard & controller
+     private float GetHorizontalInput()
+     {
+          float input = Input.GetAxisRaw("Horizontal"); // Keyboard input
 
-     // determine the direction the character should face based on directional input
+          if (Gamepad.current != null)
+          {
+               input = Gamepad.current.leftStick.x.ReadValue(); // Left Stick
+               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+               {
+                    input = Gamepad.current.dpad.x.ReadValue();
+               }
+          }
+
+          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+     }
+
+     // Get vertical movement input from keyboard & controller
+     private float GetVerticalInput()
+     {
+          float input = Input.GetAxisRaw("Vertical"); // Keyboard input
+
+          if (Gamepad.current != null)
+          {
+               input = Gamepad.current.leftStick.y.ReadValue(); // Left Stick
+               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+               {
+                    input = Gamepad.current.dpad.y.ReadValue();
+               }
+          }
+
+          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+     }
+
+     // Determine the direction the character should face based on movement
      List<Sprite> GetSpriteDirection()
      {
           List<Sprite> selectedSprites = null;
 
-          if (direction.y > 0) // north
+          if (direction.y > 0) // North
           {
                selectedSprites = nSprites;
           }
-          else if (direction.y < 0) // south
+          else if (direction.y < 0) // South
           {
                selectedSprites = sSprites;
           }
-          else if (direction.x > 0) // east
+          else if (direction.x > 0) // East
           {
                selectedSprites = eSprites;
           }
-          else if (direction.x < 0) // west
+          else if (direction.x < 0) // West
           {
                selectedSprites = wSprites;
           }
 
           return selectedSprites;
      }
-
-
-
 }
