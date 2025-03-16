@@ -12,9 +12,6 @@ public class BeatManager : MonoBehaviour
      // Event that passes beat timestamp
      public static event Action<float> OnBeat;
 
-     // Event for firing projectiles
-     public static event Action OnQuarterNote;
-
      // Window size in seconds within which a keypress is considered "on beat"
      [SerializeField] private float beatWindowSize = 0.15f; // 150ms window
 
