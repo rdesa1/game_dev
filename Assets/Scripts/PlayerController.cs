@@ -29,9 +29,10 @@ public class PlayerController2D : MonoBehaviour
           movePoint.parent = null;
      }
 
+     // Update is called once per frame
      public void Update()
      {
-          // This is left empty as movement logic is handled in MoveCharacter()
+
      }
 
      public void MoveCharacter()
