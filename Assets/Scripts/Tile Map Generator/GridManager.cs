@@ -13,12 +13,26 @@ public class GridManager : MonoBehaviour
      //Currently on Game Start, this generates the grid map. Eventually change this to trigger off of lobby start instead.
      private void Start()
      {
+          //Takes the width and height selected from the MapSelectionManager
+          _width = MapSelectionManager.width;
+          _height = MapSelectionManager.height;
+
+          //Destroys grid if it already exists
+          if (_tiles != null)
+          {
+               foreach (var tile in _tiles.Values)
+               {
+                    Destroy(tile.gameObject);
+               }
+          }
+
           GenerateGrid();
      }
 
      //Generates the grid based off your width and height field parameters. 
-     void GenerateGrid()
+     private void GenerateGrid()
      {
+
           _tiles = new Dictionary<Vector2, Tile>();
           for (int x = -1; x < _width + 1; x++)
           {
@@ -57,22 +71,14 @@ public class GridManager : MonoBehaviour
           return null;
      }
 
-     public List<Vector2> GetSpawnPoints()
+     public void setDimensions(int w, int h)
      {
-          if (_width < 2 || _height < 2)
-          {
-               Debug.LogError("Grid size too small! Cannot assign spawn points.");
-               return new List<Vector2>();
-          }
-
-          return new List<Vector2>
-          {
-             new Vector2(1, 1),                   // Bottom-left (inside the border)
-             new Vector2(_width - 2, 1),          // Bottom-right (inside the border)
-             new Vector2(1, _height - 2),         // Top-left (inside the border)
-             new Vector2(_width - 2, _height - 2) // Top-right (inside the border)
-          };
+          _width = w; _height = h;
      }
 
+     public void GenerateNewGrid()
+     {
 
+          GenerateGrid();
+     }
 }

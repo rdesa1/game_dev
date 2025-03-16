@@ -77,17 +77,7 @@ public class ReadyUpUI : MonoBehaviour
      private void StartGame(int playerCount)
      {
           Debug.Log($"Starting game with {playerCount} players!");
-
-          // Store controllers before switching scenes
-          PlayerDataStorage.RegisteredControllers = new Dictionary<int, Gamepad>(readyPlayers);
-
-          SceneManager.LoadScene("SampleScene"); // Load gameplay scene
-     }
-
-
-     public static class PlayerDataStorage
-     {
-          public static Dictionary<int, Gamepad> RegisteredControllers = new Dictionary<int, Gamepad>();
+          SceneManager.LoadScene("Game"); // Load the gameplay scene
      }
 
 }

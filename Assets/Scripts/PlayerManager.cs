@@ -4,88 +4,68 @@ using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
-     public GameObject playerPrefab;  // Assign your player prefab in the Inspector
+     public GameObject playerPrefab; // Assign the player prefab in the Inspector
+     public Transform[] spawnPoints; // Assign spawn points in the Inspector
 
-     private Dictionary<int, PlayerController2D> activePlayers = new Dictionary<int, PlayerController2D>();
+     private Dictionary<int, Gamepad> activePlayers = new Dictionary<int, Gamepad>();
+     private List<GameObject> spawnedPlayers = new List<GameObject>();
 
-     private GridManager gridManager;
-     public List<Vector2> spawnPoints { get; private set; } // Expose spawn points with a public getter
+     private const int MaxPlayers = 4;
+
+     public static PlayerManager Instance { get; private set; }
 
      private void Awake()
      {
-          gridManager = FindObjectOfType<GridManager>();
+          if (Instance == null)
+          {
+               Instance = this;
+          }
+          else
+          {
+               Destroy(gameObject);
+          }
      }
 
-     void Start()
+     private void Start()
      {
-          if (gridManager == null)
-          {
-               Debug.LogError("GridManager not found! Cannot set spawn points.");
-               return;
-          }
-
-          spawnPoints = gridManager.GetSpawnPoints();
+          Debug.Log($"PlayerManager Start() called. Players assigned: {activePlayers.Count}");
 
           if (spawnPoints == null || spawnPoints.Count < 4)
           {
                Debug.LogError("Not enough spawn points available!");
                return;
-          }
+     }
 
-          var registeredPlayers = ReadyUpUI.RegisteredPlayers;
+     public void AssignPlayerControllers(Dictionary<int, Gamepad> readyPlayers)
+     {
+          activePlayers = new Dictionary<int, Gamepad>(readyPlayers);
+          Debug.Log($"PlayerManager assigned {readyPlayers.Count} players before scene transition.");
 
-          if (registeredPlayers.Count == 0)
+          SpawnPlayers();
+     }
+
+     private void SpawnPlayers()
+     {
+          Debug.Log($"Spawning {activePlayers.Count} players...");
+          int i = 0;
+          foreach (var player in activePlayers)
           {
-               // No controllers detected, spawn a single keyboard player for testing.
-               Debug.Log("No controllers detected. Spawning single keyboard player.");
-               SpawnPlayer(0, "Keyboard");
-          }
-          else
-          {
-               // Spawn only controller-assigned players.
-               foreach (var entry in registeredPlayers)
+               if (i >= spawnPoints.Length) break;
+
+               GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[i].position, Quaternion.identity);
+               Debug.Log($"Player {i + 1} instantiated at {spawnPoints[i].position}");
+
+               PlayerController2D controller = newPlayer.GetComponent<PlayerController2D>();
+
+               if (controller != null)
                {
-                    int playerId = entry.Key;
-                    string gamepadName = entry.Value;
-                    SpawnPlayer(playerId, gamepadName);
+                    controller.body = newPlayer.GetComponent<Rigidbody2D>(); // Assign Rigidbody2D
                }
-          }
-     }
 
-     public void SpawnPlayer(int playerID, string gamepadName)
-     {
-          if (spawnPoints == null || spawnPoints.Count == 0)
-          {
-               Debug.LogError("No spawn points set in PlayerManager! Cannot spawn player.");
-               return;
-          }
+               spawnedPlayers.Add(newPlayer);
+               i++;
+               
 
-          int spawnIndex = playerID % spawnPoints.Count;
-          Vector2 spawnPosition = spawnPoints[spawnIndex];
-
-          GameObject newPlayer = Instantiate(playerPrefab, (Vector3)spawnPosition, Quaternion.identity);
-          PlayerController2D playerController = newPlayer.GetComponent<PlayerController2D>();
-
-          if (playerController != null)
-          {
-               playerController.playerID = playerID;
-               playerController.AssignController(gamepadName);
-               activePlayers[playerID] = playerController; // Track spawned players
-          }
-     }
-
-     // Respawn a player after they are killed
-     public void RespawnPlayer(int playerID)
-     {
-          if (activePlayers.ContainsKey(playerID))
-          {
-               activePlayers[playerID].Respawn();
-          }
-          else
-          {
-               Debug.LogWarning($"Player {playerID + 1} is missing, spawning a new one.");
-               string gamepadName = ReadyUpUI.RegisteredPlayers.ContainsKey(playerID) ? ReadyUpUI.RegisteredPlayers[playerID] : "Keyboard";
-               SpawnPlayer(playerID, gamepadName);
           }
      }
 }
