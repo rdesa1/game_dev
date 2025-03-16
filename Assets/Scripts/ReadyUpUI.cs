@@ -78,6 +78,6 @@ public class ReadyUpUI : MonoBehaviour
      private void StartGame(int playerCount)
      {
           Debug.Log($"Starting game with {playerCount} players!");
-          SceneManager.LoadScene("SampleScene"); // Load the gameplay scene
+          SceneManager.LoadScene("Game"); // Load the gameplay scene
      }
 }
