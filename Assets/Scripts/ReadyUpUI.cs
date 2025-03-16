@@ -7,23 +7,23 @@ using UnityEngine.InputSystem;
 
 public class ReadyUpUI : MonoBehaviour
 {
-     public TMP_Text instructionText;
-     public TMP_Text playerCountText;
-     public Button startGameButton;
+     public TMP_Text instructionText; // UI text displaying instructions
+     public TMP_Text playerCountText; // UI text displaying the number of ready players
+     public Button startGameButton; // Button to start the game
 
      private Dictionary<int, Gamepad> readyPlayers = new Dictionary<int, Gamepad>(); // Tracks unique controllers
-     private const int MaxPlayers = 4;
-     private int minPlayersRequired = 2;
+     private const int MaxPlayers = 4; // Maximum number of players
+     private int minPlayersRequired = 2; // Minimum players needed to enable the start button
 
      void Start()
      {
-          startGameButton.interactable = false;
+          startGameButton.interactable = false; // Disable start button at launch
           UpdatePlayerCountText();
      }
 
      void Update()
      {
-          // Single Player Mode: If Enter is pressed, start the game immediately
+          // Single Player Mode: If Enter is pressed on keyboard, start the game immediately
           if (Keyboard.current.enterKey.wasPressedThisFrame)
           {
                StartGame(1);
@@ -42,13 +42,14 @@ public class ReadyUpUI : MonoBehaviour
           }
      }
 
+     // Registers a new player when they press Start on their controller
      private void RegisterPlayer(Gamepad gamepad)
      {
-          // Check if this gamepad is already registered
+          // Ensure the controller is not already registered and the max player count isn't exceeded
           if (!readyPlayers.ContainsValue(gamepad) && readyPlayers.Count < MaxPlayers)
           {
-               int playerId = readyPlayers.Count; // Assign sequential player numbers
-               readyPlayers[playerId] = gamepad; // Store controller reference
+               int playerId = readyPlayers.Count; // Assigns a sequential player number
+               readyPlayers[playerId] = gamepad; // Stores the controller reference
 
                Debug.Log($"Player {playerId + 1} is ready with {gamepad.name}!");
 
@@ -62,11 +63,13 @@ public class ReadyUpUI : MonoBehaviour
           }
      }
 
+     // Updates the UI text to reflect the number of ready players
      void UpdatePlayerCountText()
      {
           playerCountText.text = $"Players Ready: {readyPlayers.Count} / {MaxPlayers}";
      }
 
+     // Starts the game when the start button is pressed
      public void StartGameFromButton()
      {
           if (readyPlayers.Count >= minPlayersRequired)
@@ -75,10 +78,10 @@ public class ReadyUpUI : MonoBehaviour
           }
      }
 
+     // Loads the MapSelection scene and begins the game
      private void StartGame(int playerCount)
      {
           Debug.Log($"Starting game with {playerCount} players!");
           SceneManager.LoadScene("MapSelection"); // Load the MapSelection scene instead of Game
      }
-
 }
