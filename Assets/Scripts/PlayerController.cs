@@ -18,10 +18,27 @@ public class PlayerController2D : MonoBehaviour
      public LayerMask whatStopsMovement;
 
      private Vector2 direction = Vector2.zero; // Stores movement direction
+     private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
 
      void Start()
      {
           movePoint.parent = null;
+     }
+
+     void Update()
+     {
+          // Check keyboard input every frame and store the last input
+          float moveX = Input.GetAxisRaw("Horizontal");
+          float moveY = Input.GetAxisRaw("Vertical");
+
+          if (moveX != 0)
+          {
+               lastInput = new Vector2(Mathf.Round(moveX), 0); // Prioritize horizontal movement
+          }
+          else if (moveY != 0)
+          {
+               lastInput = new Vector2(0, Mathf.Round(moveY));
+          }
      }
 
      public void MoveCharacter()
@@ -31,9 +48,9 @@ public class PlayerController2D : MonoBehaviour
 
           if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
           {
-               // Get input from keyboard or controller
-               float moveX = GetHorizontalInput();
-               float moveY = GetVerticalInput();
+               // Use last stored input for movement
+               float moveX = lastInput.x;
+               float moveY = lastInput.y;
 
                // Update direction before movement check
                direction = new Vector2(moveX, moveY);
