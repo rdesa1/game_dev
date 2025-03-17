@@ -24,7 +24,7 @@ public class ControllerManager : MonoBehaviour
                     else
                     {
                          controllerList.Add(controller);
-                         Debug.Log("SetControllerList() just added " + controller.deviceId);
+                         Debug.Log("SetControllerList() just added " + controller);
                     }
                }
           }
@@ -45,6 +45,7 @@ public class ControllerManager : MonoBehaviour
      private int UpdateControllerCount()
      {
           int numberOfControllers = controllerList.Count;
+          Debug.Log("Number of gamepads detected: " + numberOfControllers);
           return numberOfControllers;
      }
 
