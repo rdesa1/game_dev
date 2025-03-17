@@ -4,25 +4,25 @@ using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
-     public float walkSpeed = 5f;
-     public float frameRate;
-     public Transform movePoint;
-     public Rigidbody2D body;
-     public SpriteRenderer spriteRenderer;
+     public float walkSpeed = 5f; // Speed of movement
+     public float frameRate; // Frame rate for animations
+     public Transform movePoint; // Target position for movement
+     public Rigidbody2D body; // Rigidbody for physics interactions
+     public SpriteRenderer spriteRenderer; // Sprite renderer for character visuals
 
-     public List<Sprite> nSprites;
-     public List<Sprite> sSprites;
-     public List<Sprite> eSprites;
-     public List<Sprite> wSprites;
+     public List<Sprite> nSprites; // North-facing sprites
+     public List<Sprite> sSprites; // South-facing sprites
+     public List<Sprite> eSprites; // East-facing sprites
+     public List<Sprite> wSprites; // West-facing sprites
 
-     public LayerMask whatStopsMovement;
+     public LayerMask whatStopsMovement; // Layer mask for obstacles
 
      private Vector2 direction = Vector2.zero; // Stores movement direction
      private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
 
      void Start()
      {
-          movePoint.parent = null;
+          movePoint.parent = null; // Detach movePoint from parent to move independently
      }
 
      void Update()
@@ -31,6 +31,7 @@ public class PlayerController2D : MonoBehaviour
           float moveX = Input.GetAxisRaw("Horizontal");
           float moveY = Input.GetAxisRaw("Vertical");
 
+          // Store the last valid input for movement
           if (moveX != 0)
           {
                lastInput = new Vector2(Mathf.Round(moveX), 0); // Prioritize horizontal movement
@@ -58,6 +59,7 @@ public class PlayerController2D : MonoBehaviour
                // Prioritize horizontal movement over vertical
                if (Mathf.Abs(moveX) == 1 && Mathf.Abs(moveY) == 0)
                {
+                    // Check for obstacles before moving
                     if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
                     {
                          movePoint.position += new Vector3(moveX, 0f, 0f);
@@ -65,6 +67,7 @@ public class PlayerController2D : MonoBehaviour
                }
                else if (Mathf.Abs(moveY) == 1 && Mathf.Abs(moveX) == 0)
                {
+                    // Check for obstacles before moving
                     if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
                     {
                          movePoint.position += new Vector3(0f, moveY, 0f);
@@ -77,52 +80,14 @@ public class PlayerController2D : MonoBehaviour
                     List<Sprite> directionSprites = GetSpriteDirection();
                     if (directionSprites != null)
                     {
-                         spriteRenderer.sprite = directionSprites[0];
+                         spriteRenderer.sprite = directionSprites[0]; // Update sprite to match direction
                     }
                }
           }
      }
 
-     private float GetHorizontalInput()
-     {
-          float input = Input.GetAxisRaw("Horizontal"); // Keyboard input
 
-          if (Gamepad.current != null)
-          {
-               float gamepadInput = Gamepad.current.leftStick.x.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.x.ReadValue());
-               }
-          }
-
-          return input;
-     }
-
-     private float GetVerticalInput()
-     {
-          float input = Input.GetAxisRaw("Vertical"); // Keyboard input
-
-          if (Gamepad.current != null)
-          {
-               float gamepadInput = Gamepad.current.leftStick.y.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.y.ReadValue());
-               }
-          }
-
-          return input;
-     }
-
+     // Returns the correct sprite list based on movement direction
      List<Sprite> GetSpriteDirection()
      {
           if (direction.y > 0) return nSprites;
