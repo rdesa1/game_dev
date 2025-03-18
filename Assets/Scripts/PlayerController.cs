@@ -4,8 +4,7 @@ using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
-     public float walkSpeed = 5f;
-     public float frameRate;
+     public float moveSpeed = 100f;
      public Transform movePoint;
      public Rigidbody2D body;
      public SpriteRenderer spriteRenderer;
@@ -18,11 +17,10 @@ public class PlayerController2D : MonoBehaviour
      public LayerMask whatStopsMovement;
 
      private Vector2 direction = Vector2.zero; // Stores movement direction
-     private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
+     //private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
 
-     public int playerID;
 
-     private Gamepad assignedGamepad; // Assigned gamepad for this player
+     //private Gamepad assignedGamepad; // Assigned gamepad for this player
 
      void Start()
      {
@@ -32,60 +30,123 @@ public class PlayerController2D : MonoBehaviour
      void Update()
      {
           // Check keyboard input every frame and store the last input
-          float moveX = Input.GetAxisRaw("Horizontal");
-          float moveY = Input.GetAxisRaw("Vertical");
+          //float moveX = Input.GetAxisRaw("Horizontal");
+          //float moveY = Input.GetAxisRaw("Vertical");
 
-          if (moveX != 0)
+          //if (moveX != 0)
+          //{
+          //     lastInput = new Vector2(Mathf.Round(moveX), 0); // Prioritize horizontal movement
+          //}
+          //else if (moveY != 0)
+          //{
+          //     lastInput = new Vector2(0, Mathf.Round(moveY));
+          //}
+     }
+
+     private List<Sprite> GetSpriteDirection()
+     {
+          if (direction.y > 0) return nSprites;
+          if (direction.y < 0) return sSprites;
+          if (direction.x > 0) return eSprites;
+          if (direction.x < 0) return wSprites;
+          return null;
+     }
+
+     /* currently turns the character too slowly, causing them to miss a beat every so often */
+     private void UpdateSpriteDirection()
+     {
+          // Update sprite only when there's movement
+          if (direction != Vector2.zero)
           {
-               lastInput = new Vector2(Mathf.Round(moveX), 0); // Prioritize horizontal movement
-          }
-          else if (moveY != 0)
-          {
-               lastInput = new Vector2(0, Mathf.Round(moveY));
+               List<Sprite> directionSprites = GetSpriteDirection();
+               if (directionSprites != null && directionSprites.Count > 0)
+               {
+                    spriteRenderer.sprite = directionSprites[0]; // Pick the first frame for now
+               }
           }
      }
+
 
      public void MoveCharacter()
      {
-          // Move toward the movePoint
-          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
+          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-          if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
+          // Check if the character has reached the movement point
+          if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
           {
-               // Use last stored input for movement
-               float moveX = lastInput.x;
-               float moveY = lastInput.y;
+               float horizontal = Input.GetAxisRaw("Horizontal");
+               float vertical = Input.GetAxisRaw("Vertical");
 
-               // Update direction before movement check
-               direction = new Vector2(moveX, moveY);
-
-               // Prioritize horizontal movement over vertical
-               if (Mathf.Abs(moveX) == 1 && Mathf.Abs(moveY) == 0)
+               // Handle horizontal movement
+               if (Mathf.Abs(horizontal) == 1f)
                {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
+                    // Check for collisions before moving
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(horizontal, 0f, 0f), .2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(moveX, 0f, 0f);
+                         movePoint.position += new Vector3(horizontal, 0f, 0f);
+                         direction = new Vector2(horizontal, 0f); // Update movement direction
+                         //UpdateSpriteDirection();
                     }
                }
-               else if (Mathf.Abs(moveY) == 1 && Mathf.Abs(moveX) == 0)
+               // Handle vertical movement
+               else if (Mathf.Abs(vertical) == 1f)
                {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
+                    // Check for collisions before moving
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, vertical, 0f), .2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(0f, moveY, 0f);
+                         movePoint.position += new Vector3(0f, vertical, 0f);
+                         direction = new Vector2(0f, vertical); // Update movement direction
+                         //UpdateSpriteDirection();
                     }
                }
 
-               // Update sprite only when there's movement
-               if (direction != Vector2.zero)
-               {
-                    List<Sprite> directionSprites = GetSpriteDirection();
-                    if (directionSprites != null)
-                    {
-                         spriteRenderer.sprite = directionSprites[0];
-                    }
-               }
           }
      }
+
+
+
+
+     //public void MoveCharacter()
+     //{
+     //     // Move toward the movePoint
+     //     transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
+
+     //     if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
+     //     {
+     //          // Use last stored input for movement
+     //          float moveX = lastInput.x;
+     //          float moveY = lastInput.y;
+
+     //          // Update direction before movement check
+     //          direction = new Vector2(moveX, moveY);
+
+     //          // Prioritize horizontal movement over vertical
+     //          if (Mathf.Abs(moveX) == 1 && Mathf.Abs(moveY) == 0)
+     //          {
+     //               if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
+     //               {
+     //                    movePoint.position += new Vector3(moveX, 0f, 0f);
+     //               }
+     //          }
+     //          else if (Mathf.Abs(moveY) == 1 && Mathf.Abs(moveX) == 0)
+     //          {
+     //               if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
+     //               {
+     //                    movePoint.position += new Vector3(0f, moveY, 0f);
+     //               }
+     //          }
+
+     // Update sprite only when there's movement
+     //if (direction != Vector2.zero)
+     //{
+     //     List<Sprite> directionSprites = GetSpriteDirection();
+     //     if (directionSprites != null)
+     //     {
+     //          spriteRenderer.sprite = directionSprites[0];
+     //     }
+     //}
+     //     }
+     //}
 
 
 
@@ -142,14 +203,7 @@ public class PlayerController2D : MonoBehaviour
      //     return input;
      //}
 
-     List<Sprite> GetSpriteDirection()
-     {
-          if (direction.y > 0) return nSprites;
-          if (direction.y < 0) return sSprites;
-          if (direction.x > 0) return eSprites;
-          if (direction.x < 0) return wSprites;
-          return null;
-     }
+
 
      //public void Respawn()
      //{
@@ -168,17 +222,18 @@ public class PlayerController2D : MonoBehaviour
      //}
 
      // Assign a specific controller to this player
-     public void AssignController(string gamepadName)
-     {
-          foreach (Gamepad gamepad in Gamepad.all)
-          {
-               if (gamepad.name == gamepadName)
-               {
-                    assignedGamepad = gamepad;
-                    Debug.Log($"Player {playerID + 1} assigned to {gamepad.name}");
-                    return;
-               }
-          }
-          Debug.LogWarning($"Gamepad {gamepadName} not found for Player {playerID + 1}");
-     }
+     //public void AssignController(string gamepadName)
+     //{
+     //     foreach (Gamepad gamepad in Gamepad.all)
+     //     {
+     //          if (gamepad.name == gamepadName)
+     //          {
+     //               assignedGamepad = gamepad;
+     //               Debug.Log($"Player {playerID + 1} assigned to {gamepad.name}");
+     //               return;
+     //          }
+     //     }
+     //     Debug.LogWarning($"Gamepad {gamepadName} not found for Player {playerID + 1}");
+     //}
+
 }
