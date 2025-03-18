@@ -1,69 +1,100 @@
+/* This script is responsible for instantiating player prefabs. */
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
-     public const int MAX_PLAYERS = 4; // Maximum number of players allowed
+     public const int MAX_NUMBER_OF_PLAYERS = 4; // Maximum number of players allowed
+     public static int numberOfPlayers = 0; // number of players to add to the game
 
-     //public GameObject playerPrefab; // Assign the player prefab in the Inspector
-     //public Transform[] spawnPoints; // Assign spawn points in the Inspector
+     // Prefab player objects
+     [SerializeField] private GameObject Player1;
+     [SerializeField] private GameObject Player2;
+     [SerializeField] private GameObject Player3;
+     [SerializeField] private GameObject Player4;
 
-     //private Dictionary<int, Gamepad> activePlayers = new Dictionary<int, Gamepad>(); // Stores assigned controllers
-     //private List<GameObject> spawnedPlayers = new List<GameObject>(); // Stores instantiated player objects
-
-     //public static PlayerManager Instance { get; private set; } // Singleton instance
+     // List that will contain some number of the above prefab player objects
+     public static List<GameObject> playerList; 
 
      private void Awake()
      {
-          // Ensure only one instance of PlayerManager exists
-          //if (Instance == null)
-          //{
-          //     Instance = this;
-          //}
-          //else
-          //{
-          //     Destroy(gameObject);
-          //}
-
 
      }
 
+     // Start is called once before the first execution of Update after the MonoBehaviour is created
      private void Start()
      {
-          //Debug.Log($"PlayerManager Start() called. Players assigned: {activePlayers.Count}");
+          SetNumberOfPlayers();
+          SetPlayerList(numberOfPlayers);
+          InstantiatePlayers(playerList, GetSpawnPoints(), GetControllerList());
      }
 
-     //// Assigns players' controllers after scene transition
-     //public void AssignPlayerControllers(Dictionary<int, Gamepad> readyPlayers)
-     //{
-     //     activePlayers = new Dictionary<int, Gamepad>(readyPlayers); // Copy the assigned players
-     //     Debug.Log($"PlayerManager assigned {readyPlayers.Count} players before scene transition.");
+     // Update is called once per frame
+     private void Update()
+     {
 
-     //     SpawnPlayers();
-     //}
+     }
 
-     // Instantiates player characters at predefined spawn points
-     //private void SpawnPlayers()
-     //{
-     //     Debug.Log($"Spawning {activePlayers.Count} players...");
-     //     int i = 0;
-     //     foreach (var player in activePlayers)
-     //     {
-     //          if (i >= spawnPoints.Length) break; // Ensure we don't exceed available spawn points
+     // start
+     private void SetNumberOfPlayers()
+     {
+          numberOfPlayers = ControllerManager.controllerCount;
+     }
 
-     //          GameObject newPlayer = Instantiate(playerPrefab, spawnPoints[i].position, Quaternion.identity);
-     //          Debug.Log($"Player {i + 1} instantiated at {spawnPoints[i].position}");
+     // start
+     // Adds the players to the list so they can get spawn points and controllers assigned
+     private void SetPlayerList(int numberOfPlayers)
+     {
+          switch (numberOfPlayers)
+          {
+               case 1:
+                    playerList.Add(Player1);
+                    break;
+               case 2:
+                    playerList.Add(Player1);
+                    playerList.Add(Player2);
+                    break;
+               case 3:
+                    playerList.Add(Player1);
+                    playerList.Add(Player2);
+                    playerList.Add(Player3);
+                    break;
+               case 4:
+                    playerList.Add(Player1);
+                    playerList.Add(Player2);
+                    playerList.Add(Player3);
+                    playerList.Add(Player4);
+                    break;
+          }
+     }
 
-     //          // Assign Rigidbody2D to PlayerController2D
-     //          PlayerController2D controller = newPlayer.GetComponent<PlayerController2D>();
-     //          if (controller != null)
-     //          {
-     //               controller.body = newPlayer.GetComponent<Rigidbody2D>();
-     //          }
+     // Get the spawn points from spawnManager
+     private List<Vector2> GetSpawnPoints()
+     { 
+          return SpawnManager.spawnPoints;
+     }
 
-     //          spawnedPlayers.Add(newPlayer);
-     //          i++;
-     //     }
-     //}
+     // Get the list of gamepads from controllerManager
+     private List<Gamepad> GetControllerList()
+     {
+          return ControllerManager.controllerList;
+     }
+
+     // start
+     // Instantiates all players and assigns them their respective gamepad and spawnpoint
+     private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnsPoints, List<Gamepad> controllerList)
+     {
+          for (int index = 0; index < playerList.Count; index++)
+          {
+               GameObject player = Instantiate(original: playerList[index], position: spawnsPoints[index], rotation: Quaternion.identity);
+               PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+               playerProperties.assignedSpawnPoint = spawnsPoints[index];
+               playerProperties.assignedController = controllerList[index];
+               Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
+                    playerProperties.assignedController);
+               
+          }
+     }
 }

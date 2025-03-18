@@ -1,26 +1,24 @@
-/* This class is responsible for handling connected gamepads */
+/* This script is responsible for handling connected gamepads. */
 
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class ControllerManager : MonoBehaviour
 {
-     private List<Gamepad> controllerList = new List<Gamepad>(); // List of connect gamepads
+     public static List<Gamepad> controllerList = new List<Gamepad>(); // List of connect gamepads
      public static int controllerCount = 0; // count of connected gamepads
 
      private void Awake()
      {
-          SetControllerList();
           UpdateControllerCount();
      }
 
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-
+          SetControllerList();
      }
 
      // Update is called once per frame
@@ -29,7 +27,7 @@ public class ControllerManager : MonoBehaviour
           CheckScene(SceneManager.GetActiveScene().name);
      }
 
-     // awake
+     // start
      // update the list of connected gamepads
      private void SetControllerList()
      {
@@ -37,7 +35,7 @@ public class ControllerManager : MonoBehaviour
           {
                foreach (Gamepad controller in Gamepad.all)
                {
-                    if (controllerList.Count == PlayerManager.MAX_PLAYERS)
+                    if (controllerList.Count == PlayerManager.MAX_NUMBER_OF_PLAYERS)
                     {
                          break;
                     }
@@ -57,6 +55,7 @@ public class ControllerManager : MonoBehaviour
      // get the list of connected gamepads
      private List<Gamepad> GetControllerList()
      {
+          //Debug.Log("Here is the controllerList: " + controllerList);
           return controllerList;
      }
 

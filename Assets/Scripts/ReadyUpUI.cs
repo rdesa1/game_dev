@@ -41,7 +41,7 @@ public class ReadyUpUI : MonoBehaviour
      // Updates the counter of players who will play in multiplayer.
      private void UpdatePlayerCountText()
      {
-          playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_PLAYERS}";
+          playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
           Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
      }
 
@@ -91,6 +91,6 @@ public class ReadyUpUI : MonoBehaviour
                     LoadScene();
                }
           }
-          
      }
+
 }

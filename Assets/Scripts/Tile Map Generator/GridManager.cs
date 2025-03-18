@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviour
 
      private Dictionary<Vector2, Tile> _tiles;
 
+     public static List<Vector2> corners; // passed to the SpawnManager for spawnPoints
+
      //Currently on Game Start, this generates the grid map. Eventually change this to trigger off of lobby start instead.
      private void Start()
      {
@@ -81,4 +83,25 @@ public class GridManager : MonoBehaviour
 
           GenerateGrid();
      }
+
+
+     // Get corner tiles for SpawnManager
+     public List<Vector2> SetCornerTiles()
+     {
+          List<Vector2> corners = new List<Vector2>();
+
+          
+          Vector2 bottomLeft = new Vector2(0, 0);
+          Vector2 bottomRight = new Vector2(_width - 1, 0);
+          Vector2 topLeft = new Vector2(0, _height - 1);
+          Vector2 topRight = new Vector2(_width - 1, _height - 1);
+
+          corners.Add(bottomLeft);
+          corners.Add(bottomRight);
+          corners.Add(topLeft);
+          corners.Add(topRight);
+
+          return corners;
+     }
+
 }
