@@ -1,8 +1,10 @@
 /* This class is responsible for handling connected gamepads */
 
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ControllerManager : MonoBehaviour
 {
@@ -42,11 +44,21 @@ public class ControllerManager : MonoBehaviour
 
      // awake
      // update the count of connected game pads
-     private int UpdateControllerCount()
+     private void UpdateControllerCount()
      {
-          int numberOfControllers = controllerList.Count;
-          Debug.Log("Number of gamepads detected: " + numberOfControllers);
-          return numberOfControllers;
+          ControllerManager.controllerCount = controllerList.Count;
+          //Debug.Log("Number of gamepads detected: " + controllerCount);
+     }
+
+     private void CheckScene(string sceneName)
+     {
+          //Debug.Log("From ControllerManager, the current scene is " + sceneName);
+          while (sceneName.Equals("ReadUpScene"))
+          {
+               SetControllerList();
+               UpdateControllerCount();
+          }
+               
      }
 
      private void Awake()
@@ -58,12 +70,12 @@ public class ControllerManager : MonoBehaviour
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-
+          
      }
 
      // Update is called once per frame
      void Update()
      {
-
+          CheckScene(SceneManager.GetActiveScene().name);
      }
 }

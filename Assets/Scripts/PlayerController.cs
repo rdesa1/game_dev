@@ -87,74 +87,60 @@ public class PlayerController2D : MonoBehaviour
           }
      }
 
-<<<<<<< HEAD
-     // Get horizontal movement input from the assigned controller
-=======
->>>>>>> bda86b3 (working on keyboard fix)
-     private float GetHorizontalInput()
-     {
-          if (assignedGamepad != null) // Only use the assigned gamepad
-          {
-<<<<<<< HEAD
-               float input = assignedGamepad.leftStick.x.ReadValue(); // Left Stick
-               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
-               {
-                    input = assignedGamepad.dpad.x.ReadValue();
-=======
-               float gamepadInput = Gamepad.current.leftStick.x.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.x.ReadValue());
->>>>>>> bda86b3 (working on keyboard fix)
-               }
-               return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
-          }
 
-<<<<<<< HEAD
-          // If no assigned controller and single-player mode is active, allow keyboard input
-          return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Horizontal") : 0;
-     }
 
-     // Get vertical movement input from the assigned controller
-=======
-          return input;
-     }
+     //private float GetHorizontalInput()
+     //{
+     //     if (assignedGamepad != null) // Only use the assigned gamepad
+     //     {
+     //          float input = assignedGamepad.leftStick.x.ReadValue(); // Left Stick
+     //          if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+     //          {
+     //               input = assignedGamepad.dpad.x.ReadValue();
+     //          float gamepadInput = Gamepad.current.leftStick.x.ReadValue();
+     //          if (Mathf.Abs(gamepadInput) > 0.5f)
+     //          {
+     //               input = Mathf.Round(gamepadInput);
+     //          }
+     //          else
+     //          {
+     //               input = Mathf.Round(Gamepad.current.dpad.x.ReadValue());
+     //          }
+     //          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+     //     }
 
->>>>>>> bda86b3 (working on keyboard fix)
-     private float GetVerticalInput()
-     {
-          if (assignedGamepad != null) // Only use the assigned gamepad
-          {
-<<<<<<< HEAD
-               float input = assignedGamepad.leftStick.y.ReadValue(); // Left Stick
-               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
-               {
-                    input = assignedGamepad.dpad.y.ReadValue();
-=======
-               float gamepadInput = Gamepad.current.leftStick.y.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.y.ReadValue());
->>>>>>> bda86b3 (working on keyboard fix)
-               }
-               return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
-          }
+     //     // If no assigned controller and single-player mode is active, allow keyboard input
+     //     return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Horizontal") : 0;
+     //}
 
-<<<<<<< HEAD
-          // If no assigned controller and single-player mode is active, allow keyboard input
-          return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Vertical") : 0;
-=======
-          return input;
->>>>>>> bda86b3 (working on keyboard fix)
-     }
+     //// Get vertical movement input from the assigned controller
+     //     return input;
+     //}
+
+     //private float GetVerticalInput()
+     //{
+     //     if (assignedGamepad != null) // Only use the assigned gamepad
+     //     {
+     //          float input = assignedGamepad.leftStick.y.ReadValue(); // Left Stick
+     //          if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+     //          {
+     //               input = assignedGamepad.dpad.y.ReadValue();
+     //          float gamepadInput = Gamepad.current.leftStick.y.ReadValue();
+     //          if (Mathf.Abs(gamepadInput) > 0.5f)
+     //          {
+     //               input = Mathf.Round(gamepadInput);
+     //          }
+     //          else
+     //          {
+     //               input = Mathf.Round(Gamepad.current.dpad.y.ReadValue());
+     //          }
+     //          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+     //     }
+
+     //     // If no assigned controller and single-player mode is active, allow keyboard input
+     //     return (Gamepad.all.Count == 0) ? Input.GetAxisRaw("Vertical") : 0;
+     //     return input;
+     //}
 
      List<Sprite> GetSpriteDirection()
      {
@@ -165,21 +151,21 @@ public class PlayerController2D : MonoBehaviour
           return null;
      }
 
-     public void Respawn()
-     {
-          PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+     //public void Respawn()
+     //{
+     //     PlayerManager playerManager = FindObjectOfType<PlayerManager>();
 
-          if (playerManager.spawnPoints.Count > 0) // Use .Count instead of .Length
-          {
-               int spawnIndex = playerID % playerManager.spawnPoints.Count; // Use .Count
-               transform.position = (Vector3)playerManager.spawnPoints[spawnIndex]; // No .position needed
-               Debug.Log($"Player {playerID + 1} respawned at {transform.position}");
-          }
-          else
-          {
-               Debug.LogError("No spawn points assigned in PlayerManager!");
-          }
-     }
+     //     if (playerManager.spawnPoints.Count > 0) // Use .Count instead of .Length
+     //     {
+     //          int spawnIndex = playerID % playerManager.spawnPoints.Count; // Use .Count
+     //          transform.position = (Vector3)playerManager.spawnPoints[spawnIndex]; // No .position needed
+     //          Debug.Log($"Player {playerID + 1} respawned at {transform.position}");
+     //     }
+     //     else
+     //     {
+     //          Debug.LogError("No spawn points assigned in PlayerManager!");
+     //     }
+     //}
 
      // Assign a specific controller to this player
      public void AssignController(string gamepadName)
