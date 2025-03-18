@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+/* This class is responsible for the UI components of the ReadyUp Scene */
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,74 +12,85 @@ public class ReadyUpUI : MonoBehaviour
      public TMP_Text playerCountText; // UI text displaying the number of ready players
      public Button startGameButton; // Button to start the game
 
-     private Dictionary<int, Gamepad> readyPlayers = new Dictionary<int, Gamepad>(); // Tracks unique controllers
-     public static Dictionary<int, string> RegisteredPlayers = new Dictionary<int, string>();
-     private const int MaxPlayers = 4;
-     private int minPlayersRequired = 2; // Minimum players needed to enable the start button
+     private int MIN_NUM_FOR_MULTIPLAYER = 2; // Minimum players needed to enable the start button
 
+     private void Awake()
+     {
+          SetStartButtonEvent();
+     }
+
+     // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-
-          //Debug.Log($"Registered Players: {ReadyUpUI.RegisteredPlayers.Count}");
-
           startGameButton.interactable = false; // Disable start button at launch
           UpdatePlayerCountText();
+          SetStartButtonEvent();
      }
 
+     // Update is called once per frame
      void Update()
      {
-          // Single Player Mode: If Enter is pressed on keyboard, start the game immediately
-          //if (Keyboard.current.enterKey.wasPressedThisFrame)
-          //{
-          //     StartGame(1);
-          //}
-
-          //// Detect controller Start button (PS5: Options button)
-          //if (Gamepad.all.Count > 0)
-          //{
-          //     foreach (Gamepad gamepad in Gamepad.all)
-          //     {
-          //          if (gamepad.startButton.wasPressedThisFrame)
-          //          {
-          //               RegisterPlayer(gamepad);
-          //          }
-          //     }
-          //}
-
           UpdatePlayerCountText();
-          TogglePlayButton();
+          ToggleStartButtonClickability();
+          LoadSceneWithKeyboard();
+          LoadSceneWithController();
      }
 
-     // update
      // start
+     // update
+     // Updates the counter of players who will play in multiplayer.
      private void UpdatePlayerCountText()
      {
           playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_PLAYERS}";
-          //Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
+          Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
      }
 
      // update
-     private void TogglePlayButton()
+     // For multiplayer, enables the play button when enough controllers are detected
+     private void ToggleStartButtonClickability()
      {
-          if (ControllerManager.controllerCount > 1)
+          if (ControllerManager.controllerCount >= MIN_NUM_FOR_MULTIPLAYER)
           {
                startGameButton.interactable = true;
           }
      }
 
-     // Starts the game when the start button is pressed
-     //public void StartGameFromButton()
-     //{
-     //     if (readyPlayers.Count >= minPlayersRequired)
-     //     {
-     //          StartGame(readyPlayers.Count);
-     //     }
-     //}
+     // awake
+     // Sets up the functionality of the UI start button to load the next scene.
+     private void SetStartButtonEvent()
+     {
+          startGameButton.onClick.AddListener(LoadScene);
+     }
 
-     // Loads the MapSelection scene and begins the game
-     //private void StartGame(int playerCount)
-     //{
-     //     Debug.Log($"Starting game with {playerCount} players!");
-     //     SceneManager.LoadScene("MapSelection"); // Load the MapSelection scene instead of Game
-     //}
+     // Loads the next scene.
+     private void LoadScene()
+     {
+          SceneManager.LoadScene("MapSelection");
+     }
+
+     // update
+     // Loads the next scene when the "Enter" key is pressed. Necessary for singleplayer.
+     private void LoadSceneWithKeyboard()
+     {
+          if (Input.GetKey(KeyCode.KeypadEnter))
+          {
+               Debug.Log("Logging the next scene by the Enter Key!");
+               LoadScene();
+          }
+     }
+
+     // update
+     // Loads the next scene when the start button on registed controller has been pressed.
+     private void LoadSceneWithController()
+     {
+          if (ControllerManager.controllerCount >= MIN_NUM_FOR_MULTIPLAYER)
+          {
+               if (Gamepad.current.startButton.wasPressedThisFrame)
+               {
+                    Debug.Log("Loading the next scene by a controller press!");
+                    LoadScene();
+               }
+          }
+          
+     }
 }
