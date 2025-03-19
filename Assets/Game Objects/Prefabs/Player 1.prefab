@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 4868511387303685770}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 112, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -178,8 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bc5c51c40a6253459b0bbc792e03959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 100
-  frameRate: 0
+  moveSpeed: 100
   movePoint: {fileID: 790873410697507904}
   body: {fileID: 1700372258212360725}
   spriteRenderer: {fileID: 7387683283034471145}
@@ -206,6 +205,7 @@ MonoBehaviour:
   whatStopsMovement:
     serializedVersion: 2
     m_Bits: 512
+  assignedSpawnPoint: {x: 0, y: 0}
 --- !u!114 &2369360658201556345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,7 +334,7 @@ Transform:
   m_GameObject: {fileID: 8180284188401547830}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []

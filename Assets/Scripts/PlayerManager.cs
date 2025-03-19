@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -42,7 +43,7 @@ public class PlayerManager : MonoBehaviour
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      private void Start()
      {
-          
+
      }
 
      private void OnDisable()
@@ -105,26 +106,46 @@ public class PlayerManager : MonoBehaviour
           return ControllerManager.controllerList;
      }
 
+
+
      // start
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
      private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
+          BeatManager beatManager = FindObjectOfType<BeatManager>();
+          if (beatManager == null)
+          {
+               Debug.LogError("BeatManager not found! Players won't sync to beats.");
+               return;
+          }
+
           //Debug.Log("playerList: " + playerList);
           //Debug.Log("spawnPoints: " + spawnPoints);
           //Debug.Log("controllerList: " + controllerList);
 
-               for (int index = 0; index < playerList.Count; index++)
-               {
-               Debug.Log("player: " + playerList[index]);
-               Debug.Log("spawnPoint: " + spawnPoints[index]);
+          for (int index = 0; index < playerList.Count; index++)
+          {
+               //Debug.Log("player: " + playerList[index]);
+               //Debug.Log("spawnPoint: " + spawnPoints[index]);
                Debug.Log("controllerList: " + controllerList[index]);
-                    GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
-                    PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-                    playerProperties.assignedSpawnPoint = spawnPoints[index];
-                    playerProperties.assignedController = controllerList[index];
-                    Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
-                         playerProperties.assignedController);
+               GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
+               PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+               playerProperties.assignedSpawnPoint = spawnPoints[index];
+               playerProperties.assignedController = controllerList[index];
+               Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
+                    playerProperties.assignedController);
+
+               // Assign player instance to BeatManager
+               foreach (Intervals interval in beatManager.intervals)
+               {
+               //TODO: add interval per player instantiation, below implementation doesn't work, it allows too strong a movement
+                    if (interval.steps == 1)
+                    {
+                         interval.trigger.AddListener(playerProperties.MoveCharacter);
+                    }
+                    
                }
+          }
      }
 
      // perform logic depending on the scene
@@ -147,13 +168,13 @@ public class PlayerManager : MonoBehaviour
      private IEnumerator WaitForSpawnPoints()
      {
           while (SpawnManager.spawnPoints == null || SpawnManager.spawnPoints.Count < numberOfPlayers)
-               {
+          {
                Debug.Log("Waiting for spawn points to be initialized...");
                yield return null;  // Wait for the next frame
           }
 
           Debug.Log("Spawn points ready! Spawning players...");
-          InstantiatePlayers(PlayerManager.playerList, SpawnManager.spawnPoints, ControllerManager.controllerList);
+          InstantiatePlayers(PlayerManager.playerList, GetSpawnPoints(), GetControllerList());
      }
 }
 

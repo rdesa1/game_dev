@@ -21,7 +21,6 @@ public class PlayerController2D : MonoBehaviour
      public LayerMask whatStopsMovement;
 
      private Vector2 direction = Vector2.zero; // Stores movement direction
-     //private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
 
      public Gamepad assignedController; // Assigned gamepad for this player
      public Vector2 assignedSpawnPoint; // Assigned spawnPoint for this player
@@ -66,91 +65,81 @@ public class PlayerController2D : MonoBehaviour
           }
      }
 
-     private void MoveCharacterWithKeyboard()
+     public void MoveCharacter()
      {
+          // Synchronize movement across all input systems.
           transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-          // Check if the character has reached the movement point
-          if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
+          if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
           {
-               float horizontal = Input.GetAxisRaw("Horizontal");
-               float vertical = Input.GetAxisRaw("Vertical");
+               // Get input from keyboard or controller
+               float moveX = GetHorizontalInput();
+               float moveY = GetVerticalInput();
 
-               // Handle horizontal movement
-               if (Mathf.Abs(horizontal) == 1f)
+               // Process horizontal movement
+               if (Mathf.Abs(moveX) == 1)
                {
-                    // Check for collisions before moving
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(horizontal, 0f, 0f), .2f, whatStopsMovement))
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(horizontal, 0f, 0f);
-                         direction = new Vector2(horizontal, 0f); // Update movement direction
-                                                                  //UpdateWhereSpriteIsFacing();
+                         movePoint.position += new Vector3(moveX, 0f, 0f);
                     }
                }
-               // Handle vertical movement
-               else if (Mathf.Abs(vertical) == 1f)
+               // Process vertical movement
+               else if (Mathf.Abs(moveY) == 1)
                {
-                    // Check for collisions before moving
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, vertical, 0f), .2f, whatStopsMovement))
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(0f, vertical, 0f);
-                         direction = new Vector2(0f, vertical); // Update movement direction
-                                                                //UpdateWhereSpriteIsFacing();
-                    }
-               }
-
-          }
-     }
-
-
-     private void MoveCharacterWithController()
-     {
-          if (assignedController == null) return; // Ensure there's an assigned controller
-
-          if (assignedController.wasUpdatedThisFrame) // Ensure only the assigned controller sends input
-          {
-               // Read input directly from the assigned controller
-               float horizontal = assignedController.leftStick.x.ReadValue();
-               float vertical = assignedController.leftStick.y.ReadValue();
-
-               Vector2 moveDirection = new Vector2(horizontal, vertical);
-
-               if (moveDirection.magnitude > 0.1f) // Ensure there's enough input before moving
-               {
-                    transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
-
-                    if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
-                    {
-                         moveDirection = moveDirection.normalized;
-
-                         // Handle horizontal movement
-                         if (Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y)) // Prioritize horizontal
-                         {
-                              if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveDirection.x, 0f, 0f), 0.2f, whatStopsMovement))
-                              {
-                                   movePoint.position += new Vector3(moveDirection.x, 0f, 0f);
-                                   direction = new Vector2(moveDirection.x, 0f);
-                              }
-                         }
-                         // Handle vertical movement
-                         else
-                         {
-                              if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveDirection.y, 0f), 0.2f, whatStopsMovement))
-                              {
-                                   movePoint.position += new Vector3(0f, moveDirection.y, 0f);
-                                   direction = new Vector2(0f, moveDirection.y);
-                              }
-                         }
+                         movePoint.position += new Vector3(0f, moveY, 0f);
                     }
                }
           }
+
+          // Get sprite that faces the same direction as input
+          List<Sprite> directionSprites = GetSpriteDirection();
+          if (directionSprites != null)
+          {
+               spriteRenderer.sprite = directionSprites[0];
+          }
      }
 
-     public void EnableMovement()
+     // Get horizontal movement input from keyboard & controller
+     private float GetHorizontalInput()
      {
-          MoveCharacterWithKeyboard();
-          MoveCharacterWithController();
+          float input = Input.GetAxisRaw("Horizontal"); // Keyboard input
+
+          if (Gamepad.current != null)
+          {
+               input = Gamepad.current.leftStick.x.ReadValue(); // Left Stick
+               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+               {
+                    input = Gamepad.current.dpad.x.ReadValue();
+               }
+          }
+
+          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
      }
+
+     // Get vertical movement input from keyboard & controller
+     private float GetVerticalInput()
+     {
+          float input = Input.GetAxisRaw("Vertical"); // Keyboard input
+
+          if (Gamepad.current != null)
+          {
+               input = Gamepad.current.leftStick.y.ReadValue(); // Left Stick
+               if (Mathf.Abs(input) < 0.5f) // Prioritize D-Pad if left stick is not used much
+               {
+                    input = Gamepad.current.dpad.y.ReadValue();
+               }
+          }
+
+          return Mathf.Round(input); // Round to -1, 0, or 1 to ensure discrete movement
+     }
+
+     //public void EnableMovement()
+     //{
+       
+     //}
 
      //public void MoveCharacter()
      //{
