@@ -1,5 +1,7 @@
 /* This script is responsible for handling connected gamepads. */
 
+// Scenes: ReadyUpScene (persist to)=> Game
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +14,7 @@ public class ControllerManager : MonoBehaviour
 
      private void Awake()
      {
+          DontDestroyOnLoad(this); // persist across scenes
           UpdateControllerCount();
      }
 
@@ -66,7 +69,8 @@ public class ControllerManager : MonoBehaviour
           ControllerManager.controllerCount = controllerList.Count;
           //Debug.Log("Number of gamepads detected: " + controllerCount);
      }
-
+     
+     // perform logic depending on the scene
      private void CheckScene(string sceneName)
      {
           //Debug.Log("From ControllerManager, the current scene is " + sceneName);

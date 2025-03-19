@@ -1,3 +1,7 @@
+/* This script handles the player character prefab logic. */
+
+// Scenes: Game
+
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem; // Import Unity's Input System

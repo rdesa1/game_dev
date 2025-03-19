@@ -1,3 +1,7 @@
+/* This script handles spawn points. */
+
+// Scenes: Game
+
 using System.Collections.Generic;
 using UnityEngine;
 
