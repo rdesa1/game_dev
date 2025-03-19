@@ -2,7 +2,9 @@
 
 // Scenes: ReadyUpScene (persist to)=> Game
 
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -23,7 +25,7 @@ public class PlayerManager : MonoBehaviour
 
      private void Awake()
      {
-          DontDestroyOnLoad(this); // persist across scenes
+          DontDestroyOnLoad(gameObject); // persist across scenes
      }
 
      private void OnEnable()
@@ -86,29 +88,39 @@ public class PlayerManager : MonoBehaviour
                     playerList.Add(Player4);
                     break;
           }
+          Debug.Log("Updated playerList count: " + playerList.Count);
      }
 
      // Get the spawn points from spawnManager
      private List<Vector2> GetSpawnPoints()
-     { 
+     {
+          Debug.Log("Spawn points count: " + SpawnManager.spawnPoints.Count);
           return SpawnManager.spawnPoints;
      }
 
      // Get the list of gamepads from controllerManager
      private List<Gamepad> GetControllerList()
      {
+          Debug.Log("Controller count: " + ControllerManager.controllerList.Count);
           return ControllerManager.controllerList;
      }
 
      // start
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
-     private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnsPoints, List<Gamepad> controllerList)
+     private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
+          //Debug.Log("playerList: " + playerList);
+          //Debug.Log("spawnPoints: " + spawnPoints);
+          //Debug.Log("controllerList: " + controllerList);
+
                for (int index = 0; index < playerList.Count; index++)
                {
-                    GameObject player = Instantiate(original: playerList[index], position: spawnsPoints[index], rotation: Quaternion.identity);
+               Debug.Log("player: " + playerList[index]);
+               Debug.Log("spawnPoint: " + spawnPoints[index]);
+               Debug.Log("controllerList: " + controllerList[index]);
+                    GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
                     PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-                    playerProperties.assignedSpawnPoint = spawnsPoints[index];
+                    playerProperties.assignedSpawnPoint = spawnPoints[index];
                     playerProperties.assignedController = controllerList[index];
                     Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
                          playerProperties.assignedController);
@@ -119,7 +131,7 @@ public class PlayerManager : MonoBehaviour
      private void CheckScene(string sceneName)
      {
           //Debug.Log("From ControllerManager, the current scene is " + sceneName);
-          if (sceneName.Equals("ReadUpScene"))
+          if (sceneName.Equals("ReadyUpScene"))
           {
                SetNumberOfPlayers();
                SetPlayerList(numberOfPlayers);
@@ -127,7 +139,21 @@ public class PlayerManager : MonoBehaviour
 
           if (sceneName.Equals("Game"))
           {
-               InstantiatePlayers(playerList, GetSpawnPoints(), GetControllerList());
+               Debug.Log("Scene name was Game! Waiting for spawn points...");
+               StartCoroutine(WaitForSpawnPoints());
           }
      }
+     // Coroutine to wait until spawn points are available
+     private IEnumerator WaitForSpawnPoints()
+     {
+          while (SpawnManager.spawnPoints == null || SpawnManager.spawnPoints.Count < numberOfPlayers)
+               {
+               Debug.Log("Waiting for spawn points to be initialized...");
+               yield return null;  // Wait for the next frame
+          }
+
+          Debug.Log("Spawn points ready! Spawning players...");
+     }
 }
+
+

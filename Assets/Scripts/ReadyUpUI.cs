@@ -23,7 +23,6 @@ public class ReadyUpUI : MonoBehaviour
      void Start()
      {
           startGameButton.interactable = false; // Disable start button at launch
-          UpdatePlayerCountText();
           SetStartButtonEvent();
      }
 
@@ -42,7 +41,7 @@ public class ReadyUpUI : MonoBehaviour
      private void UpdatePlayerCountText()
      {
           playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
-          Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
+          //Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
      }
 
      // update

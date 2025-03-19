@@ -14,14 +14,15 @@ public class ControllerManager : MonoBehaviour
 
      private void Awake()
      {
-          DontDestroyOnLoad(this); // persist across scenes
+          DontDestroyOnLoad(gameObject); // persist across scenes
+          SetControllerList();
           UpdateControllerCount();
      }
 
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-          SetControllerList();
+          
      }
 
      // Update is called once per frame
@@ -30,7 +31,7 @@ public class ControllerManager : MonoBehaviour
           CheckScene(SceneManager.GetActiveScene().name);
      }
 
-     // start
+     // awake
      // update the list of connected gamepads
      private void SetControllerList()
      {
@@ -66,7 +67,7 @@ public class ControllerManager : MonoBehaviour
      // update the count of connected game pads
      private void UpdateControllerCount()
      {
-          ControllerManager.controllerCount = controllerList.Count;
+          ControllerManager.controllerCount = ControllerManager.controllerList.Count;
           //Debug.Log("Number of gamepads detected: " + controllerCount);
      }
      
