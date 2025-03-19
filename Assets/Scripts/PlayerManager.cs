@@ -153,6 +153,7 @@ public class PlayerManager : MonoBehaviour
           }
 
           Debug.Log("Spawn points ready! Spawning players...");
+          InstantiatePlayers(PlayerManager.playerList, SpawnManager.spawnPoints, ControllerManager.controllerList);
      }
 }
 
