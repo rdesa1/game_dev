@@ -1,6 +1,6 @@
 /* This script handles the various maps. */
 
-// Scenes: MapSelection (persist)=> Game
+// Scenes: Game
 
 using System.Collections;
 using System.Collections.Generic;
@@ -33,7 +33,6 @@ public class GridManager : MonoBehaviour
      private int GetHeight(int MapManagerHeight)
      {
           return MapManagerHeight;
-
      }
 
      // Destroys grid if it already exists
@@ -108,7 +107,7 @@ public class GridManager : MonoBehaviour
      // Get corner tiles for SpawnManager
      public void SetCornerTiles()
      {
-          while (GridManager.corners != null)
+          if (GridManager.corners != null)
           {
                GridManager.corners.Clear();
 
