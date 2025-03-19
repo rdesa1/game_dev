@@ -67,39 +67,44 @@ public class PlayerController2D : MonoBehaviour
 
      public void MoveCharacter()
      {
-          // Synchronize movement across all input systems.
-          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
-
-          if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
+          //if ((this.assignedController != null) && (Gamepad.current.path.Equals(this.assignedController.path)))
+          if ((this.assignedController != null) && (this.assignedController.wasUpdatedThisFrame))
           {
-               // Get input from keyboard or controller
-               float moveX = GetHorizontalInput();
-               float moveY = GetVerticalInput();
+               // Synchronize movement across all input systems.
+               transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-               // Process horizontal movement
-               if (Mathf.Abs(moveX) == 1)
+               if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
                {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
+                    // Get input from keyboard or controller
+                    float moveX = GetHorizontalInput();
+                    float moveY = GetVerticalInput();
+
+                    // Process horizontal movement
+                    if (Mathf.Abs(moveX) == 1)
                     {
-                         movePoint.position += new Vector3(moveX, 0f, 0f);
+                         if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
+                         {
+                              movePoint.position += new Vector3(moveX, 0f, 0f);
+                         }
+                    }
+                    // Process vertical movement
+                    else if (Mathf.Abs(moveY) == 1)
+                    {
+                         if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
+                         {
+                              movePoint.position += new Vector3(0f, moveY, 0f);
+                         }
                     }
                }
-               // Process vertical movement
-               else if (Mathf.Abs(moveY) == 1)
+
+               // Get sprite that faces the same direction as input
+               List<Sprite> directionSprites = GetSpriteDirection();
+               if (directionSprites != null)
                {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
-                    {
-                         movePoint.position += new Vector3(0f, moveY, 0f);
-                    }
+                    spriteRenderer.sprite = directionSprites[0];
                }
           }
 
-          // Get sprite that faces the same direction as input
-          List<Sprite> directionSprites = GetSpriteDirection();
-          if (directionSprites != null)
-          {
-               spriteRenderer.sprite = directionSprites[0];
-          }
      }
 
      // Get horizontal movement input from keyboard & controller
@@ -138,7 +143,7 @@ public class PlayerController2D : MonoBehaviour
 
      //public void EnableMovement()
      //{
-       
+
      //}
 
      //public void MoveCharacter()
