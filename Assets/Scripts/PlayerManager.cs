@@ -138,10 +138,11 @@ public class PlayerManager : MonoBehaviour
                // Assign player instance to BeatManager
                foreach (Intervals interval in beatManager.intervals)
                {
-               //TODO: add interval per player instantiation, below implementation doesn't work, it allows too strong a movement
+               //TODO: below is just a temporary fix
                     if (interval.steps == 1)
                     {
                          interval.trigger.AddListener(playerProperties.MoveCharacter);
+                         break;
                     }
                     
                }
