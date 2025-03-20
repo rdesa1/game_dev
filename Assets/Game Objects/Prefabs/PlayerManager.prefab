@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3838169068483950328}
   - component: {fileID: 2784462540144415466}
+  - component: {fileID: 4769846792825908008}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -44,3 +45,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8db2337c505c8940b45b9fc98dd3842, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player1: {fileID: 3078429089251229757, guid: 869f459429fbca4488571b0753fc0be4, type: 3}
+  Player2: {fileID: 5690308704136693232, guid: fcee8d1b74e4579419d47f200a028e8a, type: 3}
+  Player3: {fileID: 4420279453157322995, guid: cd31d4c20d125414b8674e48cf0d1abc, type: 3}
+  Player4: {fileID: 625617371234772190, guid: b37629fa283d69d40adb5b9e6a68a199, type: 3}
+--- !u!114 &4769846792825908008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735755874487417441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NotificationBehavior: 0
+  m_MaxPlayerCount: 4
+  m_AllowJoining: 1
+  m_JoinBehavior: 2
+  m_PlayerJoinedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlayerLeftEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_JoinAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Join
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: e08a8c4d-f225-492a-b271-b785e1547f8d
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_PlayerPrefab: {fileID: 0}
+  m_SplitScreen: 0
+  m_MaintainAspectRatioInSplitScreen: 0
+  m_FixedNumberOfSplitScreens: -1
+  m_SplitScreenRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1

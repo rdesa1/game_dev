@@ -129,6 +129,7 @@ public class PlayerManager : MonoBehaviour
                playerProperties.assignedSpawnPoint = spawnPoints[index];
                PlayerInput controller = player.GetComponent<PlayerInput>();
                controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
+               PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>(); // We currently don't do anything with this
                Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
                     playerProperties.assignedController);
 

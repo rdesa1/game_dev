@@ -21,7 +21,7 @@ public class PlayerController2D : MonoBehaviour
 
      public LayerMask whatStopsMovement; // This character will bump into objects in this layermask
 
-     private CharacterController controller;
+     //private CharacterController controller;
      private Vector2 movementInput = Vector2.zero; // Stores movement direction
 
      public Gamepad assignedController; // Assigned gamepad for this player
@@ -35,7 +35,7 @@ public class PlayerController2D : MonoBehaviour
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-          controller = gameObject.GetComponent<CharacterController>();
+          //controller = gameObject.GetComponent<CharacterController>();
           movePoint.parent = null;
      }
 
