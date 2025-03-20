@@ -4,8 +4,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -106,8 +104,6 @@ public class PlayerManager : MonoBehaviour
           return ControllerManager.controllerList;
      }
 
-
-
      // start
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
      private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
@@ -131,20 +127,21 @@ public class PlayerManager : MonoBehaviour
                GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
                PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
                playerProperties.assignedSpawnPoint = spawnPoints[index];
-               playerProperties.assignedController = controllerList[index];
+               PlayerInput controller = player.GetComponent<PlayerInput>();
+               controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
                Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
                     playerProperties.assignedController);
 
                // Assign player instance to BeatManager
                foreach (Intervals interval in beatManager.intervals)
                {
-               //TODO: below is just a temporary fix
+                    //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
                     if (interval.steps == 1)
                     {
                          interval.trigger.AddListener(playerProperties.MoveCharacter);
                          break;
                     }
-                    
+
                }
           }
      }
