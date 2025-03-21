@@ -71,7 +71,7 @@ public class ReadyUpUI : MonoBehaviour
      // Loads the next scene when the "Enter" key is pressed. Necessary for singleplayer.
      private void LoadSceneWithKeyboard()
      {
-          if (Input.GetKey(KeyCode.KeypadEnter))
+          if (Input.GetKey(KeyCode.Return))
           {
                Debug.Log("Logging the next scene by the Enter Key!");
                LoadScene();

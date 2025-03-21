@@ -2,6 +2,7 @@
 
 // Scenes: ReadyUpScene (persist to)=> Game
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -121,6 +122,19 @@ public class PlayerManager : MonoBehaviour
                return;
           }
 
+          // 1 player game with keyboard controls
+          //if (controllerList.Count == 0) // TODO: PUT THIS IN A METHOD. SETS UP A 1 PLAYER GAME WITH KEYBOARD CONTROLS.
+          //{
+          //     GameObject player = Instantiate(original: Player1, position: spawnPoints[1], rotation: Quaternion.identity);
+          //     PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+          //     playerProperties.assignedSpawnPoint = spawnPoints[1];
+          //     playerProperties.movePoint.transform.position = spawnPoints[1];
+
+          //     // Assign keyboard control scheme
+          //     PlayerInput playerInput = player.GetComponent<PlayerInput>();
+          //     playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
+          //}
+
           //Debug.Log("playerList: " + playerList);
           //Debug.Log("spawnPoints: " + spawnPoints);
           //Debug.Log("controllerList: " + controllerList);
@@ -161,6 +175,7 @@ public class PlayerManager : MonoBehaviour
                     }
                }
           }
+
      }
 
      // perform logic depending on the scene
@@ -172,10 +187,9 @@ public class PlayerManager : MonoBehaviour
                SetNumberOfPlayers();
                SetPlayerList(numberOfPlayers);
           }
-
           if (sceneName.Equals("Game"))
           {
-               Debug.Log("Scene name was Game! Waiting for spawn points...");
+               Debug.Log("Game scene loaded, waiting for spawn points...");
                StartCoroutine(WaitForSpawnPoints());
           }
      }
@@ -196,7 +210,7 @@ public class PlayerManager : MonoBehaviour
      private Vector2 GetRandomSpawnPoint()
      {
           List<Vector2> spawnPointPool = GetSpawnPoints();
-          int index = Random.Range(1, SpawnManager.spawnPoints.Count);
+          int index = UnityEngine.Random.Range(1, SpawnManager.spawnPoints.Count);
           Vector2 randomSpawnPoint = spawnPointPool[index];
           return randomSpawnPoint;
      }
