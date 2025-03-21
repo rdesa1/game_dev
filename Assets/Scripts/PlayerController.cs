@@ -42,18 +42,7 @@ public class PlayerController2D : MonoBehaviour
      // Update is called once per frame
      void Update()
      {
-          // Check keyboard input every frame and store the last input
-          float moveX = Input.GetAxisRaw("Horizontal");
-          float moveY = Input.GetAxisRaw("Vertical");
 
-          if (moveX != 0)
-          {
-               lastInput = new Vector2(Mathf.Round(moveX), 0); // Prioritize horizontal movement
-          }
-          else if (moveY != 0)
-          {
-               lastInput = new Vector2(0, Mathf.Round(moveY));
-          }
      }
 
      // Callback function for the InputManager
