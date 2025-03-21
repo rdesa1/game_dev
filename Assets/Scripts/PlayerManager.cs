@@ -192,17 +192,18 @@ public class PlayerManager : MonoBehaviour
           InstantiatePlayers(PlayerManager.playerPrefabList, GetSpawnPoints(), GetControllerList());
      }
 
-     //private Vector2 GetRandomSpawnPoint()
-     //{
-     //     List<Vector2> spawnPointPool = GetSpawnPoints();
-     //     int index = Random.Range(1, 4);
-     //     Vector2 randomSpawnPoint = spawnPointPool[index];
-     //     return randomSpawnPoint;
-     //}
+     // Respawn players using a random spawn point.
+     private Vector2 GetRandomSpawnPoint()
+     {
+          List<Vector2> spawnPointPool = GetSpawnPoints();
+          int index = Random.Range(1, SpawnManager.spawnPoints.Count);
+          Vector2 randomSpawnPoint = spawnPointPool[index];
+          return randomSpawnPoint;
+     }
 
 
-     //// update
-     //// Check if players need to respawn and bring them back
+     // update
+     // Check if players need to respawn and bring them back
      private void RespawnPlayers()
      {
           while (respawnQueue != null && respawnQueue.Count > 0)
@@ -210,53 +211,11 @@ public class PlayerManager : MonoBehaviour
                BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX
                GameObject player = respawnQueue.Dequeue();
                PlayerController2D playerSpawnPoint = player.GetComponent<PlayerController2D>();
-               playerSpawnPoint.movePoint.transform.position = playerSpawnPoint.assignedSpawnPoint;
-               player.transform.position = playerSpawnPoint.assignedSpawnPoint;
+               playerSpawnPoint.movePoint.transform.position = GetRandomSpawnPoint();
+               player.transform.position = playerSpawnPoint.movePoint.transform.position;
                player.SetActive(true);
           }
      }
-
-
-     //// update
-     //// Check if players need to respawn and bring them back
-     //private void RespawnPlayers()
-     //{
-     //     if (respawnQueue != null && respawnQueue.Count > 0)
-     //     {
-     //          BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX
-
-     //          foreach (GameObject player in respawnQueue)
-     //          {
-     //               PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-     //               PlayerAimAndShoot playerAiming = player.GetComponent<PlayerAimAndShoot>();
-     //               Instantiate(player, playerProperties.assignedSpawnPoint, Quaternion.identity);
-
-     //               //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
-     //               foreach (Intervals interval in beatManager.intervals)
-     //               {
-
-     //                    if (interval.steps == 1)
-     //                    {
-     //                         // Set player movement to BeatManager. Trigger every quarter beat.
-     //                         interval.trigger.AddListener(playerProperties.MoveCharacter);
-     //                         break;
-     //                    }
-     //               }
-     //               foreach (Intervals interval in beatManager.intervals)
-     //               {
-     //                    if (interval.steps == .25)
-     //                    {
-     //                         // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
-     //                         interval.trigger.AddListener(playerAiming.HandleShooting);
-     //                         break;
-     //                    }
-     //               }
-     //               Debug.Log($"{player} has just respawned!");
-     //               respawnQueue.Dequeue();
-     //          }
-     //     }
-
-     //}
 }
 
 
