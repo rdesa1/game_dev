@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+/* This class is responsible for the UI components of the ReadyUp Scene */
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,77 +12,84 @@ public class ReadyUpUI : MonoBehaviour
      public TMP_Text playerCountText; // UI text displaying the number of ready players
      public Button startGameButton; // Button to start the game
 
-     private Dictionary<int, Gamepad> readyPlayers = new Dictionary<int, Gamepad>(); // Tracks unique controllers
-     private const int MaxPlayers = 4; // Maximum number of players
-     private int minPlayersRequired = 2; // Minimum players needed to enable the start button
+     private int MIN_NUM_FOR_MULTIPLAYER = 2; // Minimum players needed to enable the start button
 
+     private void Awake()
+     {
+          SetStartButtonEvent();
+     }
+
+     // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
           startGameButton.interactable = false; // Disable start button at launch
-          UpdatePlayerCountText();
+          SetStartButtonEvent();
      }
 
+     // Update is called once per frame
      void Update()
      {
-          // Single Player Mode: If Enter is pressed on keyboard, start the game immediately
-          if (Keyboard.current.enterKey.wasPressedThisFrame)
-          {
-               StartGame(1);
-          }
+          UpdatePlayerCountText();
+          ToggleStartButtonClickability();
+          LoadSceneWithKeyboard();
+          LoadSceneWithController();
+     }
 
-          // Detect controller Start button (PS5: Options button)
-          if (Gamepad.all.Count > 0)
+     // start
+     // update
+     // Updates the counter of players who will play in multiplayer.
+     private void UpdatePlayerCountText()
+     {
+          playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
+          //Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
+     }
+
+     // update
+     // For multiplayer, enables the play button when enough controllers are detected
+     private void ToggleStartButtonClickability()
+     {
+          if (ControllerManager.controllerCount >= MIN_NUM_FOR_MULTIPLAYER)
           {
-               foreach (Gamepad gamepad in Gamepad.all)
+               startGameButton.interactable = true;
+          }
+     }
+
+     // awake
+     // Sets up the functionality of the UI start button to load the next scene.
+     private void SetStartButtonEvent()
+     {
+          startGameButton.onClick.AddListener(LoadScene);
+     }
+
+     // Loads the next scene.
+     private void LoadScene()
+     {
+          SceneManager.LoadScene("MapSelection");
+     }
+
+     // update
+     // Loads the next scene when the "Enter" key is pressed. Necessary for singleplayer.
+     private void LoadSceneWithKeyboard()
+     {
+          if (Input.GetKey(KeyCode.Return))
+          {
+               Debug.Log("Logging the next scene by the Enter Key!");
+               LoadScene();
+          }
+     }
+
+     // update
+     // Loads the next scene when the start button on registed controller has been pressed.
+     private void LoadSceneWithController()
+     {
+          if (ControllerManager.controllerCount >= MIN_NUM_FOR_MULTIPLAYER)
+          {
+               if (Gamepad.current.startButton.wasPressedThisFrame)
                {
-                    if (gamepad.startButton.wasPressedThisFrame)
-                    {
-                         RegisterPlayer(gamepad);
-                    }
+                    Debug.Log("Loading the next scene by a controller press!");
+                    LoadScene();
                }
           }
      }
 
-     // Registers a new player when they press Start on their controller
-     private void RegisterPlayer(Gamepad gamepad)
-     {
-          // Ensure the controller is not already registered and the max player count isn't exceeded
-          if (!readyPlayers.ContainsValue(gamepad) && readyPlayers.Count < MaxPlayers)
-          {
-               int playerId = readyPlayers.Count; // Assigns a sequential player number
-               readyPlayers[playerId] = gamepad; // Stores the controller reference
-
-               Debug.Log($"Player {playerId + 1} is ready with {gamepad.name}!");
-
-               UpdatePlayerCountText();
-
-               // Enable start button if enough players are ready
-               if (readyPlayers.Count >= minPlayersRequired)
-               {
-                    startGameButton.interactable = true;
-               }
-          }
-     }
-
-     // Updates the UI text to reflect the number of ready players
-     void UpdatePlayerCountText()
-     {
-          playerCountText.text = $"Players Ready: {readyPlayers.Count} / {MaxPlayers}";
-     }
-
-     // Starts the game when the start button is pressed
-     public void StartGameFromButton()
-     {
-          if (readyPlayers.Count >= minPlayersRequired)
-          {
-               StartGame(readyPlayers.Count);
-          }
-     }
-
-     // Loads the MapSelection scene and begins the game
-     private void StartGame(int playerCount)
-     {
-          Debug.Log($"Starting game with {playerCount} players!");
-          SceneManager.LoadScene("MapSelection"); // Load the MapSelection scene instead of Game
-     }
 }

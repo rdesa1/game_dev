@@ -1,30 +1,45 @@
+/* This script handles the player character prefab logic. */
+
+// Scenes: Game
+
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
-     public float walkSpeed = 5f;
-     public float frameRate;
+     public float moveSpeed = 100f;
      public Transform movePoint;
      public Rigidbody2D body;
      public SpriteRenderer spriteRenderer;
 
+     // Lists of sprite frames based on direction
      public List<Sprite> nSprites;
      public List<Sprite> sSprites;
      public List<Sprite> eSprites;
      public List<Sprite> wSprites;
 
-     public LayerMask whatStopsMovement;
+     public LayerMask whatStopsMovement; // This character will bump into objects in this layermask
 
-     private Vector2 direction = Vector2.zero; // Stores movement direction
-     private Vector2 lastInput = Vector2.zero; // Stores last keyboard input
+     //private CharacterController controller;
+     private Vector2 movementInput = Vector2.zero; // Stores movement direction
 
+     public Gamepad assignedController; // Assigned gamepad for this player
+     public Vector2 assignedSpawnPoint; // Assigned spawnPoint for this player
+
+     private void Awake()
+     {
+
+     }
+
+     // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
+          //controller = gameObject.GetComponent<CharacterController>();
           movePoint.parent = null;
      }
 
+     // Update is called once per frame
      void Update()
      {
           // Check keyboard input every frame and store the last input
@@ -41,94 +56,58 @@ public class PlayerController2D : MonoBehaviour
           }
      }
 
+     // Callback function for the InputManager
+     public void OnMove(InputAction.CallbackContext context)
+     {
+          movementInput = context.ReadValue<Vector2>();
+     }
+
+     // Change the direction the character is facing depending on direction moved
+     private List<Sprite> GetSpriteDirection()
+     {
+          if (movementInput.y > 0) return nSprites;
+          if (movementInput.y < 0) return sSprites;
+          if (movementInput.x > 0) return eSprites;
+          if (movementInput.x < 0) return wSprites;
+          return null;
+     }
+
+
+     /* The logic for how the character moves. 
+      * This is only triggered by the BeatManager, ensuring that the character moves on beat */
      public void MoveCharacter()
      {
-          // Move toward the movePoint
-          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, walkSpeed * Time.deltaTime);
+          //Synchronizes all movement to for all systems.
+          transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-          if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f)
+          //Locks movement to either 1 unit vertically or horizontally.
+          if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
           {
-               // Use last stored input for movement
-               float moveX = lastInput.x;
-               float moveY = lastInput.y;
-
-               // Update direction before movement check
-               direction = new Vector2(moveX, moveY);
-
-               // Prioritize horizontal movement over vertical
-               if (Mathf.Abs(moveX) == 1 && Mathf.Abs(moveY) == 0)
+               if (Mathf.Abs(movementInput.x) == 1)
                {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(moveX, 0f, 0f), 0.2f, whatStopsMovement))
+                    //Checks collision ahead. If there's nothing, the player can move horizontally.
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(movementInput.x, 0f, 0f), 0.2f, whatStopsMovement))
                     {
-                         movePoint.position += new Vector3(moveX, 0f, 0f);
-                    }
-               }
-               else if (Mathf.Abs(moveY) == 1 && Mathf.Abs(moveX) == 0)
-               {
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, moveY, 0f), 0.2f, whatStopsMovement))
-                    {
-                         movePoint.position += new Vector3(0f, moveY, 0f);
+                         movePoint.position += new Vector3(movementInput.x, 0f, 0f);
                     }
                }
 
-               // Update sprite only when there's movement
-               if (direction != Vector2.zero)
+               else if (Mathf.Abs(movementInput.y) == 1)
                {
-                    List<Sprite> directionSprites = GetSpriteDirection();
-                    if (directionSprites != null)
+                    //Checks collision ahead. If there's nothing, the player can move vertically.
+                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, movementInput.y, 0f), 0.2f, whatStopsMovement))
                     {
-                         spriteRenderer.sprite = directionSprites[0];
+                         movePoint.position += new Vector3(0f, movementInput.y, 0f);
                     }
                }
           }
-     }
 
-     private float GetHorizontalInput()
-     {
-          float input = Input.GetAxisRaw("Horizontal"); // Keyboard input
+          // get sprite that faces same direction as input
+          List<Sprite> directionSprites = GetSpriteDirection();
 
-          if (Gamepad.current != null)
+          if (directionSprites != null)
           {
-               float gamepadInput = Gamepad.current.leftStick.x.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.x.ReadValue());
-               }
+               spriteRenderer.sprite = directionSprites[0];
           }
-
-          return input;
-     }
-
-     private float GetVerticalInput()
-     {
-          float input = Input.GetAxisRaw("Vertical"); // Keyboard input
-
-          if (Gamepad.current != null)
-          {
-               float gamepadInput = Gamepad.current.leftStick.y.ReadValue();
-               if (Mathf.Abs(gamepadInput) > 0.5f)
-               {
-                    input = Mathf.Round(gamepadInput);
-               }
-               else
-               {
-                    input = Mathf.Round(Gamepad.current.dpad.y.ReadValue());
-               }
-          }
-
-          return input;
-     }
-
-     List<Sprite> GetSpriteDirection()
-     {
-          if (direction.y > 0) return nSprites;
-          if (direction.y < 0) return sSprites;
-          if (direction.x > 0) return eSprites;
-          if (direction.x < 0) return wSprites;
-          return null;
      }
 }
