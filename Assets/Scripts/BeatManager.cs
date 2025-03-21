@@ -8,7 +8,7 @@ public class BeatManager : MonoBehaviour
      // Private variables
      [SerializeField] private float bpm;
      [SerializeField] private AudioSource music; // Handles synchronization of the music
-     [SerializeField] private Intervals[] intervals;
+     [SerializeField] public Intervals[] intervals;
 
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
@@ -23,7 +23,6 @@ public class BeatManager : MonoBehaviour
           {
                float sampledTime = (music.timeSamples / (music.clip.frequency * interval.GetIntervalLength(bpm)));
                interval.CheckForNewInterval(sampledTime);
-
           }
      }
 }
@@ -32,8 +31,8 @@ public class BeatManager : MonoBehaviour
 [System.Serializable]
 public class Intervals
 {
-     [SerializeField] private float steps;
-     [SerializeField] private UnityEvent trigger;
+     [SerializeField] public float steps;
+     [SerializeField] public UnityEvent trigger;
      private int lastInterval;
 
      public float GetIntervalLength(float bpm)

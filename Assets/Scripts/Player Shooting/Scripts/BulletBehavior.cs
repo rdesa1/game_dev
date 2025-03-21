@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,23 +26,52 @@ public class BulletBehavior : MonoBehaviour
 
      private void OnTriggerEnter2D(Collider2D collision)
      {
-          // Ignore collision with the shooter
           if (collision.gameObject == shooter) return;
 
           if (collision.CompareTag("Player")) // Player was hit
           {
                Debug.Log("Player hit!");
-               Destroy(collision.gameObject); // Eliminate the player
 
-               // Increase shooter's score (You will need to implement this in a score manager)
+               PlayerController2D playerProperties = collision.GetComponent<PlayerController2D>();
+               if (playerProperties != null)
+               {
+                    PlayerManager.respawnQueue.Enqueue(collision.gameObject); // Add player to respawn queue
+                    collision.gameObject.SetActive(false); // Make player disappear instead of destroying
+                    Debug.Log($"{collision.gameObject.name} added to respawn queue!");
+               }
           }
 
-          // Destroy bullet if it hits something in the whatDestroysBullet layer
+          // Destroy bullet
           if ((whatDestroysBullet.value & (1 << collision.gameObject.layer)) > 0)
           {
                Destroy(gameObject);
           }
      }
+
+
+
+
+     //private void OnTriggerEnter2D(Collider2D collision)
+     //{
+     //     // Ignore collision with the shooter
+     //     if (collision.gameObject == shooter) return;
+
+     //     if (collision.CompareTag("Player")) // Player was hit
+     //     {
+     //          Debug.Log("Player hit!");
+     //          GameObject copyOfPlayer = new GameObject();
+     //          Debug.Log($"{collision.gameObject} has just been added to the respawn queue!");
+     //          Destroy(collision.gameObject); // Eliminate the player
+
+     //          // Increase shooter's score (You will need to implement this in a score manager)
+     //     }
+
+     //     // Destroy bullet if it hits something in the whatDestroysBullet layer
+     //     if ((whatDestroysBullet.value & (1 << collision.gameObject.layer)) > 0)
+     //     {
+     //          Destroy(gameObject);
+     //     }
+     //}
 
 
 
