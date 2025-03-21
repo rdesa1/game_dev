@@ -255,6 +255,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 400097550}
   m_CullTransparentMesh: 1
+--- !u!1 &418150555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 418150557}
+  - component: {fileID: 418150556}
+  m_Layer: 0
+  m_Name: BeatTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &418150556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418150555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c988d9fb62ffe234c9788c8dd6ed1fb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &418150557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418150555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.78603584, y: -0.5296422, z: 0.031286225}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +1025,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].steps
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[1].steps
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[1].trigger.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -998,6 +1058,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
@@ -1021,13 +1085,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1744911290}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1744911290}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[1].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6184524231054947632, guid: bfac20452e0e6a24a94017fb4dfff5bf, type: 3}
+      objectReference: {fileID: 418150556}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[2].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2701940968197220383, guid: dd8cee6d73cb09842a6c74fb678eaca1, type: 3}
+      objectReference: {fileID: 1744911290}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[3].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1036,6 +1104,10 @@ PrefabInstance:
       propertyPath: intervals.Array.data[4].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1177589555846142769, guid: 7d0d261fbde1c604bb208d4d7b25b876, type: 3}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[1].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1057,12 +1129,16 @@ PrefabInstance:
       value: Pulse
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Pulse
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[1].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MoveCharacterWithKeyboard
+      value: TrackBeat
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[2].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EnableMovement
+      value: Pulse
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[3].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1077,12 +1153,16 @@ PrefabInstance:
       value: Timer, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Timer, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[1].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerController2D, Assembly-CSharp
+      value: BeatTracker, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[2].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayerController2D, Assembly-CSharp
+      value: Timer, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[3].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -1094,6 +1174,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
       propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
+      propertyPath: intervals.Array.data[0].trigger.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8544132182234966706, guid: e5d31172521890b4394f31f2e3b3cd04, type: 3}
@@ -1129,3 +1213,4 @@ SceneRoots:
   - {fileID: 1708842446}
   - {fileID: 1546510141}
   - {fileID: 4859881572908950861}
+  - {fileID: 418150557}

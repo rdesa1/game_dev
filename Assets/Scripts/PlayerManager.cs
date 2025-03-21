@@ -133,16 +133,25 @@ public class PlayerManager : MonoBehaviour
                Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
                     playerProperties.assignedController);
 
-               // Assign player instance to BeatManager
+               //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
                foreach (Intervals interval in beatManager.intervals)
                {
-                    //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
+                    
                     if (interval.steps == 1)
                     {
-                         interval.trigger.AddListener(playerProperties.MoveCharacter);
+                         // Set player movement to BeatManager. Trigger every quarter beat.
+                         interval.trigger.AddListener(playerProperties.MoveCharacter); 
+                         break;
+                    }             
+               }
+               foreach (Intervals interval in beatManager.intervals)
+               {
+                    if (interval.steps == .25)
+                    {
+                         // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
+                         interval.trigger.AddListener(playerAiming.HandleShooting);
                          break;
                     }
-
                }
           }
      }

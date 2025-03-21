@@ -113,6 +113,7 @@ public class PlayerAimAndShoot : MonoBehaviour
      // Fires projectile. Triggered every 4th quarter note by the BeatManager.
      public void HandleShooting()
      {
+          Debug.Log($"{gameObject.name} fired a bullet!");
           GameObject bulletInstance = Instantiate(bullet, bulletSpawnPoint.position, pointer.transform.rotation);
           bulletInstance.GetComponent<BulletBehavior>().Initialize(gameObject); // Set shooter
      }
