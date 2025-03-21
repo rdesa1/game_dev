@@ -20,7 +20,13 @@ public class PlayerManager : MonoBehaviour
      [SerializeField] private GameObject Player4;
 
      // List that will contain some number of the above prefab player objects
-     public static List<GameObject> playerList = new List<GameObject>();
+     public static List<GameObject> playerPrefabList = new List<GameObject>();
+
+     // Queue for players awaiting respawn
+     public static Queue<GameObject> respawnQueue = new Queue<GameObject>();
+
+
+     // TODO: USED FOR TEMPORARY FIXES TO PLAYER INSTANTIATION
 
      private void Awake()
      {
@@ -52,7 +58,7 @@ public class PlayerManager : MonoBehaviour
      // Update is called once per frame
      private void Update()
      {
-
+          RespawnPlayers();
      }
 
      // start
@@ -65,29 +71,29 @@ public class PlayerManager : MonoBehaviour
      // Adds the players to the list so they can get spawn points and controllers assigned
      private void SetPlayerList(int numberOfPlayers)
      {
-          playerList.Clear();
+          playerPrefabList.Clear();
           switch (numberOfPlayers)
           {
                case 1:
-                    playerList.Add(Player1);
+                    playerPrefabList.Add(Player1);
                     break;
                case 2:
-                    playerList.Add(Player1);
-                    playerList.Add(Player2);
+                    playerPrefabList.Add(Player1);
+                    playerPrefabList.Add(Player2);
                     break;
                case 3:
-                    playerList.Add(Player1);
-                    playerList.Add(Player2);
-                    playerList.Add(Player3);
+                    playerPrefabList.Add(Player1);
+                    playerPrefabList.Add(Player2);
+                    playerPrefabList.Add(Player3);
                     break;
                case 4:
-                    playerList.Add(Player1);
-                    playerList.Add(Player2);
-                    playerList.Add(Player3);
-                    playerList.Add(Player4);
+                    playerPrefabList.Add(Player1);
+                    playerPrefabList.Add(Player2);
+                    playerPrefabList.Add(Player3);
+                    playerPrefabList.Add(Player4);
                     break;
           }
-          Debug.Log("Updated playerList count: " + playerList.Count);
+          Debug.Log("Updated playerList count: " + playerPrefabList.Count);
      }
 
      // Get the spawn points from spawnManager
@@ -108,7 +114,7 @@ public class PlayerManager : MonoBehaviour
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
      private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
-          BeatManager beatManager = FindObjectOfType<BeatManager>();
+          BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
           if (beatManager == null)
           {
                Debug.LogError("BeatManager not found! Players won't sync to beats.");
@@ -127,6 +133,7 @@ public class PlayerManager : MonoBehaviour
                GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
                PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
                playerProperties.assignedSpawnPoint = spawnPoints[index];
+               playerProperties.movePoint.transform.position = spawnPoints[index];
                PlayerInput controller = player.GetComponent<PlayerInput>();
                controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
                PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>(); // We currently don't do anything with this
@@ -136,13 +143,13 @@ public class PlayerManager : MonoBehaviour
                //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
                foreach (Intervals interval in beatManager.intervals)
                {
-                    
+
                     if (interval.steps == 1)
                     {
                          // Set player movement to BeatManager. Trigger every quarter beat.
-                         interval.trigger.AddListener(playerProperties.MoveCharacter); 
+                         interval.trigger.AddListener(playerProperties.MoveCharacter);
                          break;
-                    }             
+                    }
                }
                foreach (Intervals interval in beatManager.intervals)
                {
@@ -182,8 +189,74 @@ public class PlayerManager : MonoBehaviour
           }
 
           Debug.Log("Spawn points ready! Spawning players...");
-          InstantiatePlayers(PlayerManager.playerList, GetSpawnPoints(), GetControllerList());
+          InstantiatePlayers(PlayerManager.playerPrefabList, GetSpawnPoints(), GetControllerList());
      }
+
+     //private Vector2 GetRandomSpawnPoint()
+     //{
+     //     List<Vector2> spawnPointPool = GetSpawnPoints();
+     //     int index = Random.Range(1, 4);
+     //     Vector2 randomSpawnPoint = spawnPointPool[index];
+     //     return randomSpawnPoint;
+     //}
+
+     // update
+     // Check if players need to respawn and bring them back
+     private void RespawnPlayers()
+     {
+          while (respawnQueue != null && respawnQueue.Count > 0)
+          {
+               BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX
+               GameObject player = respawnQueue.Dequeue();
+               PlayerController2D playerSpawnPoint = player.GetComponent<PlayerController2D>();
+               playerSpawnPoint.movePoint.transform.position = playerSpawnPoint.assignedSpawnPoint;
+               player.transform.position = playerSpawnPoint.assignedSpawnPoint;
+               player.SetActive(true);
+          }
+     }
+
+
+
+     //// update
+     //// Check if players need to respawn and bring them back
+     //private void RespawnPlayers()
+     //{
+     //     if (respawnQueue != null && respawnQueue.Count > 0)
+     //     {
+     //          BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX
+
+     //          foreach (GameObject player in respawnQueue)
+     //          {
+     //               PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+     //               PlayerAimAndShoot playerAiming = player.GetComponent<PlayerAimAndShoot>();
+     //               Instantiate(player, playerProperties.assignedSpawnPoint, Quaternion.identity);
+
+     //               //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
+     //               foreach (Intervals interval in beatManager.intervals)
+     //               {
+
+     //                    if (interval.steps == 1)
+     //                    {
+     //                         // Set player movement to BeatManager. Trigger every quarter beat.
+     //                         interval.trigger.AddListener(playerProperties.MoveCharacter);
+     //                         break;
+     //                    }
+     //               }
+     //               foreach (Intervals interval in beatManager.intervals)
+     //               {
+     //                    if (interval.steps == .25)
+     //                    {
+     //                         // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
+     //                         interval.trigger.AddListener(playerAiming.HandleShooting);
+     //                         break;
+     //                    }
+     //               }
+     //               Debug.Log($"{player} has just respawned!");
+     //               respawnQueue.Dequeue();
+     //          }
+     //     }
+
+     //}
 }
 
 
