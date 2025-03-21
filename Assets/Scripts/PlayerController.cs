@@ -8,6 +8,7 @@ using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
+
      public float moveSpeed = 100f;
      public Transform movePoint;
      public Rigidbody2D body;
@@ -36,7 +37,7 @@ public class PlayerController2D : MonoBehaviour
      void Start()
      {
           //controller = gameObject.GetComponent<CharacterController>();
-          movePoint.parent = null;
+          movePoint.parent = null; // Detach movePoint from parent to move independently
      }
 
      // Update is called once per frame
