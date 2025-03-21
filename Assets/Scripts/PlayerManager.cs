@@ -200,8 +200,9 @@ public class PlayerManager : MonoBehaviour
      //     return randomSpawnPoint;
      //}
 
-     // update
-     // Check if players need to respawn and bring them back
+
+     //// update
+     //// Check if players need to respawn and bring them back
      private void RespawnPlayers()
      {
           while (respawnQueue != null && respawnQueue.Count > 0)
@@ -214,7 +215,6 @@ public class PlayerManager : MonoBehaviour
                player.SetActive(true);
           }
      }
-
 
 
      //// update
