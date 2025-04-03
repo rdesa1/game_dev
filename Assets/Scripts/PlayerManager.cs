@@ -59,7 +59,7 @@ public class PlayerManager : MonoBehaviour
      // Update is called once per frame
      private void Update()
      {
-          RespawnPlayers();
+          //RespawnPlayers();
      }
 
      // start
@@ -98,7 +98,7 @@ public class PlayerManager : MonoBehaviour
      }
 
      // Get the spawn points from spawnManager
-     private List<Vector2> GetSpawnPoints()
+     public static List<Vector2> GetSpawnPoints()
      {
           Debug.Log("Spawn points count: " + SpawnManager.spawnPoints.Count);
           return SpawnManager.spawnPoints;
@@ -207,7 +207,7 @@ public class PlayerManager : MonoBehaviour
      }
 
      // Respawn players using a random spawn point.
-     private Vector2 GetRandomSpawnPoint()
+     public static Vector2 GetRandomSpawnPoint()
      {
           List<Vector2> spawnPointPool = GetSpawnPoints();
           int index = UnityEngine.Random.Range(1, SpawnManager.spawnPoints.Count);
@@ -215,21 +215,16 @@ public class PlayerManager : MonoBehaviour
           return randomSpawnPoint;
      }
 
-
      // update
      // Check if players need to respawn and bring them back
-     private void RespawnPlayers()
+     public static void RespawnPlayers(GameObject player)
      {
-          while (respawnQueue != null && respawnQueue.Count > 0)
-          {
-               BeatManager beatManager = FindObjectOfType<BeatManager>(); //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX
-               GameObject player = respawnQueue.Dequeue();
-               PlayerController2D playerSpawnPoint = player.GetComponent<PlayerController2D>();
-               playerSpawnPoint.movePoint.transform.position = GetRandomSpawnPoint();
-               player.transform.position = playerSpawnPoint.movePoint.transform.position;
-               player.SetActive(true);
-          }
+          PlayerController2D playerSpawnPoint = player.GetComponent<PlayerController2D>();
+          playerSpawnPoint.movePoint.transform.position = GetRandomSpawnPoint();
+          player.transform.position = playerSpawnPoint.movePoint.transform.position;
+          player.SetActive(true);
      }
+
 }
 
 
