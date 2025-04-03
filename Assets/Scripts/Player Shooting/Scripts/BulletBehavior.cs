@@ -26,19 +26,18 @@ public class BulletBehavior : MonoBehaviour
 
      private void OnTriggerEnter2D(Collider2D collision)
      {
-          if (collision.gameObject == shooter) return;
+          // no friendly fire
+          if (collision.gameObject == shooter)
+          {
+               return;
+          }        
 
           if (collision.CompareTag("Player")) // Player was hit
           {
-               Debug.Log("Player hit!");
-
-               PlayerController2D playerProperties = collision.GetComponent<PlayerController2D>();
-               if (playerProperties != null)
-               {
-                    PlayerManager.respawnQueue.Enqueue(collision.gameObject); // Add player to respawn queue
-                    collision.gameObject.SetActive(false); // Make player disappear instead of destroying
-                    Debug.Log($"{collision.gameObject.name} added to respawn queue!");
-               }
+               GameObject player = collision.gameObject;
+               Debug.Log($"{player} hit!");
+               player.SetActive(false);
+               PlayerManager.RespawnPlayers(player);
           }
 
           // Destroy bullet
@@ -47,9 +46,6 @@ public class BulletBehavior : MonoBehaviour
                Destroy(gameObject);
           }
      }
-
-
-
 
      //private void OnTriggerEnter2D(Collider2D collision)
      //{
@@ -72,8 +68,6 @@ public class BulletBehavior : MonoBehaviour
      //          Destroy(gameObject);
      //     }
      //}
-
-
 
      private void HandleBulletImpact(GameObject hitObject)
      {
