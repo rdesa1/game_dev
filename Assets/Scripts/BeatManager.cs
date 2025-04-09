@@ -1,19 +1,19 @@
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.Events;
+using System.Collections;
 
 public class BeatManager : MonoBehaviour
 {
 
      // Private variables
-     [SerializeField] private float bpm;
+     [SerializeField] public float bpm;
      [SerializeField] private AudioSource music; // Handles synchronization of the music
      [SerializeField] public Intervals[] intervals;
 
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-
+          //StartCoroutine("SwapTack");
      }
 
      // Update is called once per frame
@@ -25,6 +25,8 @@ public class BeatManager : MonoBehaviour
                interval.CheckForNewInterval(sampledTime);
           }
      }
+
+
 }
 
 

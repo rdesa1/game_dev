@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
 {
      public const int MAX_NUMBER_OF_PLAYERS = 4; // Maximum number of players allowed
      public static int numberOfPlayers = 0; // number of players to add to the game
+     public static bool gameStarted = false;
 
      // Prefab player objects
      [SerializeField] private GameObject Player1;
@@ -175,7 +176,7 @@ public class PlayerManager : MonoBehaviour
                     }
                }
           }
-
+          gameStarted = true;
      }
 
      // perform logic depending on the scene
