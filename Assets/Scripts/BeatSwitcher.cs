@@ -1,15 +1,17 @@
-using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
+using System.Diagnostics;
+using UnityEngine;
 
 public class BeatSwitcher : MonoBehaviour
 {
+     const float SECOND_TRACK_BPM = 120;
+     const float THIRD_TRACK_BPM = 140;
+     const float FOURTH_TRACK_BPM = 160;
+
      // Start is called once before the first execution of Update after the MonoBehaviour is created
      void Start()
      {
-          //CheckIfGameStarted();
-          StartCoroutine(SwapTrack());
-
+          //StartCoroutine(SwapTrack());
      }
 
      // Update is called once per frame
@@ -18,39 +20,78 @@ public class BeatSwitcher : MonoBehaviour
 
      }
 
-     IEnumerator SwapTrack()
+
+     public AudioClip GetNextTrack()
      {
+          AudioClip nextTrack = null;
           AudioSource audioSource = GetComponent<AudioSource>();
-          BeatManager beatManager = GetComponent<BeatManager>(); // may not need this
+          BeatManager beatManager = GetComponent<BeatManager>();
+
           if (audioSource != null)
           {
-               Debug.Log("Acquired the audioSource! Now waiting 60 seconds...");
-               yield return new WaitForSeconds(5f); // currently 5 seconds for testing
-               AudioClip nextClip = Resources.Load<AudioClip>("Audio/medicinal");
+               switch (audioSource.clip.name)
+               {
+                    case "Battle tune":
+                         nextTrack = Resources.Load<AudioClip>("Audio/Battle tune_120");
+                         if (nextTrack != null)
+                              UnityEngine.Debug.Log($"Acquired the next track: {nextTrack.name}.");
+                         else
+                              UnityEngine.Debug.Log($"The next track: {nextTrack.name} was null.");
+                         break;
+
+                    case "Battle tune_120":
+                         nextTrack = Resources.Load<AudioClip>("Audio/Battle tune_140");
+                         if (nextTrack != null)
+                              UnityEngine.Debug.Log($"Acquired the next track: {nextTrack.name}.");
+                         else
+                              UnityEngine.Debug.Log($"The next track: {nextTrack.name} was null.");
+                         break;
+
+                    case "Battle tune_140":
+                         nextTrack = Resources.Load<AudioClip>("Audio/Battle tune_160");
+                         if (nextTrack != null)
+                              UnityEngine.Debug.Log($"Acquired the next track: {nextTrack.name}.");
+                         else
+                              UnityEngine.Debug.Log($"The next track: {nextTrack.name} was null.");
+                         break;
+
+                    default:
+                         UnityEngine.Debug.Log($"The current track: {audioSource.clip.name} is not a Battle tune track");
+                         break;
+               }
+          }
+          else
+          {
+               UnityEngine.Debug.Log($"The audioSource was null.");
+          }
+          return nextTrack;
+     }
+
+     IEnumerator SwapTrack(AudioClip track)
+     {
+
+          AudioSource audioSource = GetComponent<AudioSource>();
+          BeatManager beatManager = GetComponent<BeatManager>();
+          if (audioSource != null)
+          {
+               UnityEngine.Debug.Log("Acquired the audioSource! Now waiting 60 seconds...");
+               yield return new WaitForSeconds(60f);
+               AudioClip nextClip = Resources.Load<AudioClip>("Audio/Battle tune_120");
                if (nextClip != null)
                {
                     audioSource.clip = nextClip;
                     audioSource.Play();
-                    beatManager.bpm = 78; // will change this to a constant value 
+                    beatManager.bpm = SECOND_TRACK_BPM;
                }
                else
                {
-                    Debug.Log("nextClip is null!");
+                    UnityEngine.Debug.Log("nextClip is null!");
                }
-               //audioSource.resource = Resources.Load<AudioClip>("Audio/Medicinal");
-               //beatManager.bpm = 78;
           }
           else
           {
-               Debug.Log("The audioSource was null...");  
+               UnityEngine.Debug.Log("The audioSource was null...");
           }
           yield return null;
      }
-
-     private void CheckIfGameStarted()
-     {
-               Debug.Log("The game has started!");
-               StartCoroutine("SwapTack");
-     }
-
 }
