@@ -19,19 +19,22 @@ public class GridManager : MonoBehaviour
      private void Start()
      {
           DestroyPreexistingGrid();
-          GenerateGrid(GetWidth(MapSelectionManager.width), GetHeight(MapSelectionManager.height));
+          setDimensions(GetWidth(MapSelectionManager.width), GetHeight(MapSelectionManager.height));
+          GenerateGrid(_width, _height);
           SetCornerTiles();
      }
 
      // Takes the width selected from the MapSelectionManager
      private int GetWidth(int MapManagerWidth)
      {
+          Debug.Log($"GetWidth returns: {MapManagerWidth}");
           return MapManagerWidth;
      }
 
      // Takes the height selected from the MapSelectionManager
      private int GetHeight(int MapManagerHeight)
      {
+          Debug.Log($"GetHeight returns: {MapManagerHeight}");
           return MapManagerHeight;
      }
 
@@ -52,11 +55,11 @@ public class GridManager : MonoBehaviour
      {
 
           _tiles = new Dictionary<Vector2, Tile>();
-          for (int x = -1; x < this._width + 1; x++)
+          for (int x = -1; x < _width + 1; x++)
           {
-               for (int y = -1; y < this._height + 1; y++)
+               for (int y = -1; y < _height + 1; y++)
                {
-                    bool isBorder = x == -1 || x == this._width || y == -1 || y == this._height;
+                    bool isBorder = x == -1 || x == _width || y == -1 || y == _height;
 
                     //Creates a tile & names it based on coordinate position (border or tile)
                     var spawnedTile = Instantiate(_tilePrefab, new Vector3(x, y), Quaternion.identity);
@@ -76,7 +79,7 @@ public class GridManager : MonoBehaviour
 
 
           //Changes the camera's position to the generated tilemap's center.
-          _cam.transform.position = new Vector3((float)this._width / 2 - 0.5f, (float)this._height / 2 - 0.5f, -5);
+          _cam.transform.position = new Vector3((float)_width / 2 - 0.5f, (float)_height / 2 - 0.5f, -5);
      }
 
      // Obtain tile at specified position

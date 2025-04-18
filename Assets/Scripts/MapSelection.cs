@@ -7,6 +7,7 @@ public class MapSelection : MonoBehaviour
      public void Select8x8()
      {
           MapSelectionManager.setMapSize(8, 8);
+          Debug.Log($"Height = {MapSelectionManager.height}. Width = {MapSelectionManager.width}");
           SceneManager.LoadScene("Game");
      }
 
