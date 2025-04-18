@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-     public static ScoreManager Instance { get; private set; } // Singleton instance
+     //public static ScoreManager Instance { get; private set; } // Singleton instance
 
-     private Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
+     public static Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
 
      private void Awake()
      {
           // Ensure only one instance of ScoreManager exists
-          if (Instance == null)
-          {
-               Instance = this;
-          }
-          else
-          {
-               Destroy(gameObject);
-          }
+          //if (Instance == null)
+          //{
+          //     Instance = this;
+          //}
+          //else
+          //{
+          //     Destroy(gameObject);
+          //}
      }
 
      // Increments the score for a given player
