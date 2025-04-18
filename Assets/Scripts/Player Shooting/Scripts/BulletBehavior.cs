@@ -38,6 +38,7 @@ public class BulletBehavior : MonoBehaviour
                Debug.Log($"{player} hit!");
                player.SetActive(false);
                PlayerManager.RespawnPlayers(player);
+               Destroy(gameObject);
           }
 
           // Destroy bullet
