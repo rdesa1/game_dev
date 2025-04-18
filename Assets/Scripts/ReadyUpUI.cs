@@ -1,4 +1,4 @@
-/* This class is responsible for the UI components of the ReadyUp Scene */
+/* This script is responsible for the UI components of the ReadyUp Scene */
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,12 +35,27 @@ public class ReadyUpUI : MonoBehaviour
           LoadSceneWithController();
      }
 
-     // start
+     // Helper function to center the formatting of the "Controllers Detected" text
+     private string CenterString(string text, int width)
+     {
+          if (text.Length >= width)
+          {
+               return text;
+          }
+
+          int leftPadding = (width - text.Length) / 2;
+          int rightPadding = width - text.Length - leftPadding;
+          return new string(' ', leftPadding) + text + new string(' ', rightPadding);
+     }
+
      // update
      // Updates the counter of players who will play in multiplayer.
      private void UpdatePlayerCountText()
      {
-          playerCountText.text = $"Players ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
+          playerCountText.text = $"Players Ready: {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
+
+          //string text = $"Controllers Detected:\n {ControllerManager.controllerCount} / {PlayerManager.MAX_NUMBER_OF_PLAYERS}";
+          //playerCountText.text = CenterString(text, 100);
           //Debug.Log("Controller count from ReadyUpUI: " + ControllerManager.controllerCount);
      }
 

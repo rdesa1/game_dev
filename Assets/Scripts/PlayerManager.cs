@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,6 @@ public class PlayerManager : MonoBehaviour
 {
      public const int MAX_NUMBER_OF_PLAYERS = 4; // Maximum number of players allowed
      public static int numberOfPlayers = 0; // number of players to add to the game
-     public static bool gameStarted = false;
 
      // Prefab player objects
      [SerializeField] private GameObject Player1;
@@ -60,7 +60,7 @@ public class PlayerManager : MonoBehaviour
      // Update is called once per frame
      private void Update()
      {
-          //RespawnPlayers();
+
      }
 
      // start
@@ -124,22 +124,108 @@ public class PlayerManager : MonoBehaviour
           }
 
           // 1 player game with keyboard controls
-          //if (controllerList.Count == 0) // TODO: PUT THIS IN A METHOD. SETS UP A 1 PLAYER GAME WITH KEYBOARD CONTROLS.
-          //{
-          //     GameObject player = Instantiate(original: Player1, position: spawnPoints[1], rotation: Quaternion.identity);
-          //     PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-          //     playerProperties.assignedSpawnPoint = spawnPoints[1];
-          //     playerProperties.movePoint.transform.position = spawnPoints[1];
+          if (controllerList.Count == 0) // TODO: PUT THIS IN A METHOD. SETS UP A 1 PLAYER GAME WITH KEYBOARD CONTROLS.
+          {
+               Vector2 spawnPoint = new Vector2 (0, 0);
+               InstantiateSinglePlayer(beatManager, playerList, spawnPoint);
 
-          //     // Assign keyboard control scheme
-          //     PlayerInput playerInput = player.GetComponent<PlayerInput>();
-          //     playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
-          //}
+               //GameObject player = Instantiate(original: Player1, position: (spawnPoints[0]), rotation: Quaternion.identity);
+               //PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+               //playerProperties.assignedSpawnPoint = spawnPoints[0];
+               //playerProperties.movePoint.transform.position = spawnPoints[0];
 
-          //Debug.Log("playerList: " + playerList);
-          //Debug.Log("spawnPoints: " + spawnPoints);
-          //Debug.Log("controllerList: " + controllerList);
+               //// Assign keyboard control scheme
+               //PlayerInput playerInput = player.GetComponent<PlayerInput>();
+               //playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
 
+               //Debug.Log("playerList: " + playerList);
+               //Debug.Log("spawnPoints: " + spawnPoints);
+          }
+
+
+          else {
+
+               InstantiateMultiPlayer(beatManager, playerList, spawnPoints, controllerList);
+
+
+               //for (int index = 0; index < playerList.Count; index++)
+               //{
+               //     //Debug.Log("player: " + playerList[index]);
+               //     //Debug.Log("spawnPoint: " + spawnPoints[index]);
+               //     Debug.Log("controllerList: " + controllerList[index]);
+               //     GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
+               //     PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+               //     playerProperties.assignedSpawnPoint = spawnPoints[index];
+               //     playerProperties.movePoint.transform.position = spawnPoints[index];
+               //     PlayerInput controller = player.GetComponent<PlayerInput>();
+               //     controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
+               //     PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>();
+               //     Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
+               //          playerProperties.assignedController);
+
+               //     //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
+               //     foreach (Intervals interval in beatManager.intervals)
+               //     {
+
+               //          if (interval.steps == 1)
+               //          {
+               //               // Set player movement to BeatManager. Trigger every quarter beat.
+               //               interval.trigger.AddListener(playerProperties.MoveCharacter);
+               //               break;
+               //          }
+               //     }
+               //     foreach (Intervals interval in beatManager.intervals)
+               //     {
+               //          if (interval.steps == .25)
+               //          {
+               //               // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
+               //               interval.trigger.AddListener(playerAiming.HandleShooting);
+               //               break;
+               //          }
+               //     }
+               //}
+          }
+     }
+
+     // Helper function that sets up a 1 player game with keyboard controls
+     private void InstantiateSinglePlayer(BeatManager beatManager, List<GameObject> playerList, Vector2 spawnPoint)
+     {
+          GameObject player = Instantiate(original: Player1, position: spawnPoint, rotation: Quaternion.identity);
+          PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+          playerProperties.assignedSpawnPoint = spawnPoint;
+          playerProperties.movePoint.transform.position = spawnPoint;
+
+          // Assign keyboard control scheme
+          PlayerInput playerInput = player.GetComponent<PlayerInput>();
+          playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
+          PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>();
+
+          //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
+          foreach (Intervals interval in beatManager.intervals)
+          {
+
+               if (interval.steps == 1)
+               {
+                    // Set player movement to BeatManager. Trigger every quarter beat.
+                    interval.trigger.AddListener(playerProperties.MoveCharacter);
+                    break;
+               }
+          }
+          foreach (Intervals interval in beatManager.intervals)
+          {
+               if (interval.steps == .25)
+               {
+                    // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
+                    interval.trigger.AddListener(playerAiming.HandleShooting);
+                    break;
+               }
+          }
+     }
+
+
+     // Helper function that sets up a multiplayer game with gamepad controls
+     private void InstantiateMultiPlayer(BeatManager beatManager, List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
+     {
           for (int index = 0; index < playerList.Count; index++)
           {
                //Debug.Log("player: " + playerList[index]);
@@ -151,7 +237,7 @@ public class PlayerManager : MonoBehaviour
                playerProperties.movePoint.transform.position = spawnPoints[index];
                PlayerInput controller = player.GetComponent<PlayerInput>();
                controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
-               PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>(); // We currently don't do anything with this
+               PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>();
                Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
                     playerProperties.assignedController);
 
@@ -176,7 +262,6 @@ public class PlayerManager : MonoBehaviour
                     }
                }
           }
-          gameStarted = true;
      }
 
      // perform logic depending on the scene
@@ -194,6 +279,7 @@ public class PlayerManager : MonoBehaviour
                StartCoroutine(WaitForSpawnPoints());
           }
      }
+
      // Coroutine to wait until spawn points are available
      private IEnumerator WaitForSpawnPoints()
      {
