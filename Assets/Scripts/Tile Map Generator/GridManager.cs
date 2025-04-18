@@ -106,7 +106,6 @@ public class GridManager : MonoBehaviour
           GenerateGrid(_width, _height);
      }
 
-
      // Get corner tiles for SpawnManager
      public void SetCornerTiles()
      {
