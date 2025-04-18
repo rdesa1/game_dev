@@ -126,8 +126,8 @@ public class PlayerManager : MonoBehaviour
           // 1 player game with keyboard controls
           if (controllerList.Count == 0) // TODO: PUT THIS IN A METHOD. SETS UP A 1 PLAYER GAME WITH KEYBOARD CONTROLS.
           {
-               Vector2 spawnPoint = new Vector2 (0, 0);
-               InstantiateSinglePlayer(beatManager, playerList, spawnPoint);
+               Vector2 singlePlayerSpawnPoint = new Vector2 (0, 0);
+               InstantiateSinglePlayer(beatManager, playerList, singlePlayerSpawnPoint);
 
                //GameObject player = Instantiate(original: Player1, position: (spawnPoints[0]), rotation: Quaternion.identity);
                //PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
@@ -188,12 +188,12 @@ public class PlayerManager : MonoBehaviour
      }
 
      // Helper function that sets up a 1 player game with keyboard controls
-     private void InstantiateSinglePlayer(BeatManager beatManager, List<GameObject> playerList, Vector2 spawnPoint)
+     private void InstantiateSinglePlayer(BeatManager beatManager, List<GameObject> playerList, Vector2 singlePlayerSpawnPoint)
      {
-          GameObject player = Instantiate(original: Player1, position: spawnPoint, rotation: Quaternion.identity);
+          GameObject player = Instantiate(original: Player1, position: singlePlayerSpawnPoint, rotation: Quaternion.identity);
           PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-          playerProperties.assignedSpawnPoint = spawnPoint;
-          playerProperties.movePoint.transform.position = spawnPoint;
+          playerProperties.assignedSpawnPoint = singlePlayerSpawnPoint;
+          playerProperties.movePoint.transform.position = singlePlayerSpawnPoint;
 
           // Assign keyboard control scheme
           PlayerInput playerInput = player.GetComponent<PlayerInput>();
