@@ -128,62 +128,10 @@ public class PlayerManager : MonoBehaviour
           {
                Vector2 singlePlayerSpawnPoint = new Vector2 (0, 0);
                InstantiateSinglePlayer(beatManager, playerList, singlePlayerSpawnPoint);
-
-               //GameObject player = Instantiate(original: Player1, position: (spawnPoints[0]), rotation: Quaternion.identity);
-               //PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-               //playerProperties.assignedSpawnPoint = spawnPoints[0];
-               //playerProperties.movePoint.transform.position = spawnPoints[0];
-
-               //// Assign keyboard control scheme
-               //PlayerInput playerInput = player.GetComponent<PlayerInput>();
-               //playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
-
-               //Debug.Log("playerList: " + playerList);
-               //Debug.Log("spawnPoints: " + spawnPoints);
           }
-
-
           else {
 
                InstantiateMultiPlayer(beatManager, playerList, spawnPoints, controllerList);
-
-
-               //for (int index = 0; index < playerList.Count; index++)
-               //{
-               //     //Debug.Log("player: " + playerList[index]);
-               //     //Debug.Log("spawnPoint: " + spawnPoints[index]);
-               //     Debug.Log("controllerList: " + controllerList[index]);
-               //     GameObject player = Instantiate(original: playerList[index], position: spawnPoints[index], rotation: Quaternion.identity);
-               //     PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-               //     playerProperties.assignedSpawnPoint = spawnPoints[index];
-               //     playerProperties.movePoint.transform.position = spawnPoints[index];
-               //     PlayerInput controller = player.GetComponent<PlayerInput>();
-               //     controller.SwitchCurrentControlScheme("Controller", controllerList[index]); // Assign unique gamepad
-               //     PlayerAimAndShoot playerAiming = player.GetComponentInChildren<PlayerAimAndShoot>();
-               //     Debug.Log("Spawned " + player + " with spawnPoint " + playerProperties.assignedSpawnPoint + " and controller " +
-               //          playerProperties.assignedController);
-
-               //     //TODO: THIS IS A TEMPORARY FIX. REFACTOR THE INTERVALS CLASS FOR A BETTER FIX.
-               //     foreach (Intervals interval in beatManager.intervals)
-               //     {
-
-               //          if (interval.steps == 1)
-               //          {
-               //               // Set player movement to BeatManager. Trigger every quarter beat.
-               //               interval.trigger.AddListener(playerProperties.MoveCharacter);
-               //               break;
-               //          }
-               //     }
-               //     foreach (Intervals interval in beatManager.intervals)
-               //     {
-               //          if (interval.steps == .25)
-               //          {
-               //               // Set player prjectible to BeatManager. Trigger every 4th quarter beat.
-               //               interval.trigger.AddListener(playerAiming.HandleShooting);
-               //               break;
-               //          }
-               //     }
-               //}
           }
      }
 
