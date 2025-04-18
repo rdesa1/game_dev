@@ -13,7 +13,14 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : MonoBehaviour
 {
      public const int MAX_NUMBER_OF_PLAYERS = 4; // Maximum number of players allowed
+
      public static int numberOfPlayers = 0; // number of players to add to the game
+
+     // The time in seconds for a player to be invulnerable after respawning.
+     private const float SPAWN_PROTECTION_DURATION = 1.5f;
+
+     // The time in seconds for a player object to be blinking after respawning
+     private const float BLINK_RATE = 0.2f;
 
      // Prefab player objects
      [SerializeField] private GameObject Player1;
@@ -124,7 +131,7 @@ public class PlayerManager : MonoBehaviour
           }
 
           // 1 player game with keyboard controls
-          if (controllerList.Count == 0) // TODO: PUT THIS IN A METHOD. SETS UP A 1 PLAYER GAME WITH KEYBOARD CONTROLS.
+          if (controllerList.Count == 0)
           {
                Vector2 singlePlayerSpawnPoint = new Vector2 (0, 0);
                InstantiateSinglePlayer(beatManager, playerList, singlePlayerSpawnPoint);
@@ -250,14 +257,32 @@ public class PlayerManager : MonoBehaviour
           return randomSpawnPoint;
      }
 
-     // update
-     // Check if players need to respawn and bring them back
+     // Respawns players after they've been hit
      public static void RespawnPlayers(GameObject player)
      {
           PlayerController2D playerSpawnPoint = player.GetComponent<PlayerController2D>();
           playerSpawnPoint.movePoint.transform.position = GetRandomSpawnPoint();
           player.transform.position = playerSpawnPoint.movePoint.transform.position;
           player.SetActive(true);
+          //GrantSpawnProtection(player, SPAWN_PROTECTION_DURATION, BLINK_RATE);
+     }
+
+     // TODO: Change this from coroutine implementation to MonoBehavior.InvokeRepeating
+     public static IEnumerator Blink(GameObject player, float blinkSpeed)
+     {
+          Renderer playerRenderer = player.GetComponent<Renderer>();
+          playerRenderer.enabled = false;
+          yield return new WaitForSeconds(blinkSpeed);
+          playerRenderer.enabled = true;
+          yield return new WaitForSeconds(blinkSpeed);
+     }
+
+     public static void GrantSpawnProtection(GameObject player, float protectionDuration, float blinkRate)
+     {
+          while (Time.time < protectionDuration)
+          {
+               Blink(player, blinkRate);
+          }
      }
 
 }

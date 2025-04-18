@@ -72,4 +72,21 @@ public class SpawnManager : MonoBehaviour
                StartCoroutine(WaitForGridManager());
           }
      }
+
+     private IEnumerator Blink(GameObject player, float blinkSpeed)
+     {
+          Renderer playerRenderer = player.GetComponent<Renderer>();
+          playerRenderer.enabled = false;
+          yield return new WaitForSeconds(blinkSpeed);
+          playerRenderer.enabled = true;
+          yield return new WaitForSeconds(blinkSpeed);
+     }
+
+     public void GrantSpawnProtection(GameObject player, float protectionDuration, float blinkRate)
+     {
+          while (Time.time < protectionDuration)
+          {
+               StartCoroutine(Blink(player, blinkRate));
+          }
+     }
 }
