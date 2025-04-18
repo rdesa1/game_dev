@@ -5,7 +5,7 @@ public class ScoreManager : MonoBehaviour
 {
      public static ScoreManager Instance { get; private set; } // Singleton instance
 
-     private Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
+     public static Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
 
      private void Awake()
      {

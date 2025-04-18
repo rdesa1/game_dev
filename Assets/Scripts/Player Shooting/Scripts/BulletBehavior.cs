@@ -47,28 +47,6 @@ public class BulletBehavior : MonoBehaviour
           }
      }
 
-     //private void OnTriggerEnter2D(Collider2D collision)
-     //{
-     //     // Ignore collision with the shooter
-     //     if (collision.gameObject == shooter) return;
-
-     //     if (collision.CompareTag("Player")) // Player was hit
-     //     {
-     //          Debug.Log("Player hit!");
-     //          GameObject copyOfPlayer = new GameObject();
-     //          Debug.Log($"{collision.gameObject} has just been added to the respawn queue!");
-     //          Destroy(collision.gameObject); // Eliminate the player
-
-     //          // Increase shooter's score (You will need to implement this in a score manager)
-     //     }
-
-     //     // Destroy bullet if it hits something in the whatDestroysBullet layer
-     //     if ((whatDestroysBullet.value & (1 << collision.gameObject.layer)) > 0)
-     //     {
-     //          Destroy(gameObject);
-     //     }
-     //}
-
      private void HandleBulletImpact(GameObject hitObject)
      {
           // If the bullet hit a PlayerCharacter and it's not the shooter
