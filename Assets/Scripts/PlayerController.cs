@@ -8,7 +8,7 @@ using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
-
+     public int playerID;
      public float moveSpeed = 100f;
      public Transform movePoint;
      public Rigidbody2D body;

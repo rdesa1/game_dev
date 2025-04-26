@@ -353,6 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bc5c51c40a6253459b0bbc792e03959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 0
   moveSpeed: 100
   movePoint: {fileID: 5238531599940121123}
   body: {fileID: 8605899378168017792}
