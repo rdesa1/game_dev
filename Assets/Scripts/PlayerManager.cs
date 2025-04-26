@@ -119,6 +119,8 @@ public class PlayerManager : MonoBehaviour
           {
                InstantiateMultiPlayer(beatManagerInstance, playerList, spawnPoints, controllerList);
           }
+
+          DebugPlayerIDs(); // Debug print player IDs after spawning
      }
 
      // Helper function that sets up a 1 player game with keyboard controls
@@ -163,7 +165,7 @@ public class PlayerManager : MonoBehaviour
                PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
                playerProperties.assignedSpawnPoint = spawnPoints[index];
                playerProperties.movePoint.transform.position = spawnPoints[index];
-               playerProperties.playerID = index + 1; // Assign playerID based on spawn order (index 0 -> ID 1)
+               playerProperties.playerID = index + 1; // Assign playerID based on spawn order
 
                PlayerInput controller = player.GetComponent<PlayerInput>();
                controller.SwitchCurrentControlScheme("Controller", controllerList[index]);
@@ -272,15 +274,16 @@ public class PlayerManager : MonoBehaviour
                yield break;
           }
 
+          PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
+          Color blinkColor = GetPlayerColor(playerProperties.playerID); // Get assigned color
+
           bool fadeOut = true;
 
           UnityAction blinkAction = () =>
           {
                if (playerRenderer != null)
                {
-                    Color newColor = originalColor;
-                    newColor.a = fadeOut ? 0.4f : 1f;
-                    playerRenderer.material.color = Color.Lerp(playerRenderer.material.color, newColor, 0.5f);
+                    playerRenderer.material.color = fadeOut ? blinkColor : originalColor;
                     fadeOut = !fadeOut;
                }
           };
@@ -296,9 +299,7 @@ public class PlayerManager : MonoBehaviour
 
           if (playerRenderer != null)
           {
-               Color resetColor = originalColor;
-               resetColor.a = 1f;
-               playerRenderer.material.color = resetColor;
+               playerRenderer.material.color = originalColor;
           }
 
           invinciblePlayers.Remove(player);
@@ -308,5 +309,34 @@ public class PlayerManager : MonoBehaviour
      public static bool IsPlayerInvincible(GameObject player)
      {
           return invinciblePlayers.Contains(player);
+     }
+
+     // Gets the assigned blink color for each player
+     private Color GetPlayerColor(int playerID)
+     {
+          switch (playerID)
+          {
+               case 1:
+                    return new Color(1f, 0.25f, 0.25f, 1f); // Red
+               case 2:
+                    return new Color(0.4f, 0.8f, 1f, 1f); // Blue
+               case 3:
+                    return new Color(0.5f, 1f, 0.5f, 1f); // Green
+               case 4:
+                    return new Color(0.9f, 0.6f, 1f, 1f); // Purple
+               default:
+                    return Color.white;
+          }
+     }
+
+     // Debug function to print all playerIDs after spawning
+     private void DebugPlayerIDs()
+     {
+          PlayerController2D[] allPlayers = FindObjectsOfType<PlayerController2D>();
+
+          foreach (PlayerController2D player in allPlayers)
+          {
+               Debug.Log($"{player.gameObject.name} has playerID: {player.playerID}");
+          }
      }
 }
