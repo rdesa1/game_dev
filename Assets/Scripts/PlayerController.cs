@@ -1,5 +1,3 @@
-/* This script handles the player character prefab logic. */
-
 // Scenes: Game
 
 using UnityEngine;
@@ -99,5 +97,4 @@ public class PlayerController2D : MonoBehaviour
                spriteRenderer.sprite = directionSprites[0];
           }
      }
-
 }
