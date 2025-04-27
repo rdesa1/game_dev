@@ -1,4 +1,4 @@
-/* This script is responsible for instantiating player prefabs. */
+﻿/* This script is responsible for instantiating player prefabs. */
 
 // Scenes: ReadyUpScene (persist to)=> Game
 
@@ -44,7 +44,7 @@ public class PlayerManager : MonoBehaviour
      void OnSceneLoaded(Scene scene, LoadSceneMode mode)
      {
           CheckScene(SceneManager.GetActiveScene().name);
-          beatManager = FindObjectOfType<BeatManager>(); // Cache BeatManager when the scene loads
+          beatManager = FindFirstObjectByType<BeatManager>(); // Cache BeatManager when the scene loads
      }
 
      private void OnDisable()
@@ -103,7 +103,7 @@ public class PlayerManager : MonoBehaviour
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
      private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
-          BeatManager beatManagerInstance = FindObjectOfType<BeatManager>(); //TODO: TEMP FIX
+          BeatManager beatManagerInstance = FindFirstObjectByType<BeatManager>(); //TODO: TEMP FIX
           if (beatManagerInstance == null)
           {
                Debug.LogError("BeatManager not found! Players won't sync to beats.");
@@ -131,6 +131,12 @@ public class PlayerManager : MonoBehaviour
           playerProperties.assignedSpawnPoint = singlePlayerSpawnPoint;
           playerProperties.movePoint.transform.position = singlePlayerSpawnPoint;
           playerProperties.playerID = 1; // Single player gets ID 1
+
+          OutlineController outline = player.GetComponentInChildren<OutlineController>();
+          if (outline != null)
+          {
+               outline.SetOutlineColor(GetPlayerColor(playerProperties.playerID));
+          }
 
           PlayerInput playerInput = player.GetComponent<PlayerInput>();
           playerInput.SwitchCurrentControlScheme("Keyboard", Keyboard.current);
@@ -166,6 +172,12 @@ public class PlayerManager : MonoBehaviour
                playerProperties.assignedSpawnPoint = spawnPoints[index];
                playerProperties.movePoint.transform.position = spawnPoints[index];
                playerProperties.playerID = index + 1; // Assign playerID based on spawn order
+
+               OutlineController outline = player.GetComponentInChildren<OutlineController>();
+               if (outline != null)
+               {
+                    outline.SetOutlineColor(GetPlayerColor(playerProperties.playerID));
+               }
 
                PlayerInput controller = player.GetComponent<PlayerInput>();
                controller.SwitchCurrentControlScheme("Controller", controllerList[index]);
@@ -240,7 +252,7 @@ public class PlayerManager : MonoBehaviour
      // Grants spawn protection and starts blinking
      public static void GrantSpawnProtection(GameObject player)
      {
-          PlayerManager instance = FindObjectOfType<PlayerManager>();
+          PlayerManager instance = FindFirstObjectByType<PlayerManager>();
           if (instance != null)
           {
                invinciblePlayers.Add(player);
@@ -250,12 +262,26 @@ public class PlayerManager : MonoBehaviour
 
      private IEnumerator SpawnProtectionCoroutine(GameObject player, double protectionDuration)
      {
-          Renderer playerRenderer = player.GetComponent<Renderer>();
-          Color originalColor = playerRenderer.material.color;
+          Transform blinkTransform = player.transform.Find("BlinkSprite");
+          if (blinkTransform == null)
+          {
+               Debug.LogError("BlinkSprite child not found on " + player.name);
+               yield break;
+          }
+
+          SpriteRenderer blinkSpriteRenderer = blinkTransform.GetComponent<SpriteRenderer>();
+          if (blinkSpriteRenderer == null)
+          {
+               Debug.LogError("BlinkSprite SpriteRenderer missing on " + player.name);
+               yield break;
+          }
+
+          // Set BlinkSprite initially invisible
+          blinkSpriteRenderer.color = new Color(blinkSpriteRenderer.color.r, blinkSpriteRenderer.color.g, blinkSpriteRenderer.color.b, 0f);
 
           if (beatManager == null)
           {
-               beatManager = FindObjectOfType<BeatManager>();
+               beatManager = FindFirstObjectByType<BeatManager>();
           }
 
           Intervals beatInterval = null;
@@ -275,15 +301,17 @@ public class PlayerManager : MonoBehaviour
           }
 
           PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
-          Color blinkColor = GetPlayerColor(playerProperties.playerID); // Get assigned color
+          Color blinkColor = GetPlayerColor(playerProperties.playerID);
 
           bool fadeOut = true;
 
           UnityAction blinkAction = () =>
           {
-               if (playerRenderer != null)
+               if (blinkSpriteRenderer != null)
                {
-                    playerRenderer.material.color = fadeOut ? blinkColor : originalColor;
+                    blinkSpriteRenderer.color = fadeOut
+                         ? new Color(blinkColor.r, blinkColor.g, blinkColor.b, 1f)
+                         : new Color(blinkColor.r, blinkColor.g, blinkColor.b, 0f);
                     fadeOut = !fadeOut;
                }
           };
@@ -297,9 +325,9 @@ public class PlayerManager : MonoBehaviour
                yield return null;
           }
 
-          if (playerRenderer != null)
+          if (blinkSpriteRenderer != null)
           {
-               playerRenderer.material.color = originalColor;
+               blinkSpriteRenderer.color = new Color(blinkColor.r, blinkColor.g, blinkColor.b, 0f);
           }
 
           invinciblePlayers.Remove(player);
@@ -332,7 +360,7 @@ public class PlayerManager : MonoBehaviour
      // Debug function to print all playerIDs after spawning
      private void DebugPlayerIDs()
      {
-          PlayerController2D[] allPlayers = FindObjectsOfType<PlayerController2D>();
+          PlayerController2D[] allPlayers = FindObjectsByType<PlayerController2D>(FindObjectsSortMode.None);
 
           foreach (PlayerController2D player in allPlayers)
           {
