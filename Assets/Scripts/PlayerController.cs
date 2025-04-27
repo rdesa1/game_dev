@@ -62,7 +62,7 @@ public class PlayerController2D : MonoBehaviour
 
 
      /* The logic for how the character moves. 
-     * This is only triggered by the BeatManager, ensuring that the character moves on beat */
+  * This is only triggered by the BeatManager, ensuring that the character moves on beat */
      public void MoveCharacter()
      {
           // Synchronizes all movement for all systems.
@@ -95,6 +95,18 @@ public class PlayerController2D : MonoBehaviour
           if (directionSprites != null)
           {
                spriteRenderer.sprite = directionSprites[0];
+
+               // Also update BlinkSprite if it exists
+               Transform blinkTransform = transform.Find("BlinkSprite");
+               if (blinkTransform != null)
+               {
+                    SpriteRenderer blinkSpriteRenderer = blinkTransform.GetComponent<SpriteRenderer>();
+                    if (blinkSpriteRenderer != null)
+                    {
+                         blinkSpriteRenderer.sprite = directionSprites[0];
+                    }
+               }
           }
      }
+
 }
