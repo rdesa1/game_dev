@@ -10,6 +10,21 @@ public class PlayerAimAndShoot : MonoBehaviour
      private Vector2 worldPosition;
      private Vector2 direction = Vector2.right;
      private bool usingController = false; // Track input type
+     private Color bulletColor; // Store the bullet color
+
+     void Start()
+     {
+          // Set bullet color based on player ID
+          PlayerController2D playerProperties = GetComponent<PlayerController2D>();
+          if (playerProperties != null)
+          {
+               bulletColor = GetPlayerColor(playerProperties.playerID);
+          }
+          else
+          {
+               bulletColor = Color.white; // Default fallback
+          }
+     }
 
      void Update()
      {
@@ -64,5 +79,30 @@ public class PlayerAimAndShoot : MonoBehaviour
           Debug.Log($"{gameObject.name} fired a bullet!");
           GameObject bulletInstance = Instantiate(bullet, bulletSpawnPoint.position, pointer.transform.rotation);
           bulletInstance.GetComponent<BulletBehavior>().Initialize(gameObject); // Set shooter
+
+          // Set bullet color
+          SpriteRenderer bulletRenderer = bulletInstance.GetComponent<SpriteRenderer>();
+          if (bulletRenderer != null)
+          {
+               bulletRenderer.color = bulletColor;
+          }
+     }
+
+     // Helper function to retrieve player color
+     private Color GetPlayerColor(int playerID)
+     {
+          switch (playerID)
+          {
+               case 1:
+                    return new Color(1f, 0.25f, 0.25f, 1f); // Red
+               case 2:
+                    return new Color(0.4f, 0.8f, 1f, 1f); // Blue
+               case 3:
+                    return new Color(0.5f, 1f, 0.5f, 1f); // Green
+               case 4:
+                    return new Color(0.9f, 0.6f, 1f, 1f); // Purple
+               default:
+                    return Color.white;
+          }
      }
 }
