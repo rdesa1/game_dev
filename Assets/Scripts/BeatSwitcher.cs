@@ -33,7 +33,7 @@ public class BeatSwitcher : MonoBehaviour
      {
           AudioClip nextTrack = null;
           AudioSource audioSource = GetComponent<AudioSource>();
-          BeatManager beatManager = GetComponent<BeatManager>();
+          BeatSynchronizer beatManager = GetComponent<BeatSynchronizer>();
 
           if (audioSource != null)
           {
@@ -98,7 +98,7 @@ public class BeatSwitcher : MonoBehaviour
           if (nextTrack != null)
           {
                AudioSource audioSource = GetComponent<AudioSource>();
-               BeatManager beatManager = GetComponent<BeatManager>();
+               BeatSynchronizer beatManager = GetComponent<BeatSynchronizer>();
                audioSource.Stop();
                audioSource.clip = nextTrack;
                audioSource.Play();

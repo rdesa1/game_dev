@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
      public static Queue<GameObject> respawnQueue = new Queue<GameObject>(); // Queue for players awaiting respawn
 
      private static HashSet<GameObject> invinciblePlayers = new HashSet<GameObject>(); // Set of players currently under spawn protection
-     private BeatManager beatManager; // Reference to BeatManager for syncing blinking to beats
+     private BeatSynchronizer beatManager; // Reference to BeatManager for syncing blinking to beats
 
      private void Awake()
      {
@@ -44,7 +44,7 @@ public class PlayerManager : MonoBehaviour
      void OnSceneLoaded(Scene scene, LoadSceneMode mode)
      {
           CheckScene(SceneManager.GetActiveScene().name);
-          beatManager = FindFirstObjectByType<BeatManager>(); // Cache BeatManager when the scene loads
+          beatManager = FindFirstObjectByType<BeatSynchronizer>(); // Cache BeatManager when the scene loads
      }
 
      private void OnDisable()
@@ -103,7 +103,7 @@ public class PlayerManager : MonoBehaviour
      // Instantiates all players and assigns them their respective gamepad and spawnpoint
      private void InstantiatePlayers(List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
-          BeatManager beatManagerInstance = FindFirstObjectByType<BeatManager>(); //TODO: TEMP FIX
+          BeatSynchronizer beatManagerInstance = FindFirstObjectByType<BeatSynchronizer>(); //TODO: TEMP FIX
           if (beatManagerInstance == null)
           {
                Debug.LogError("BeatManager not found! Players won't sync to beats.");
@@ -124,7 +124,7 @@ public class PlayerManager : MonoBehaviour
      }
 
      // Helper function that sets up a 1 player game with keyboard controls
-     private void InstantiateSinglePlayer(BeatManager beatManager, List<GameObject> playerList, Vector2 singlePlayerSpawnPoint)
+     private void InstantiateSinglePlayer(BeatSynchronizer beatManager, List<GameObject> playerList, Vector2 singlePlayerSpawnPoint)
      {
           GameObject player = Instantiate(Player1, singlePlayerSpawnPoint, Quaternion.identity);
           PlayerController2D playerProperties = player.GetComponent<PlayerController2D>();
@@ -161,7 +161,7 @@ public class PlayerManager : MonoBehaviour
      }
 
      // Helper function that sets up a multiplayer game with gamepad controls
-     private void InstantiateMultiPlayer(BeatManager beatManager, List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
+     private void InstantiateMultiPlayer(BeatSynchronizer beatManager, List<GameObject> playerList, List<Vector2> spawnPoints, List<Gamepad> controllerList)
      {
           for (int index = 0; index < playerList.Count; index++)
           {
@@ -281,7 +281,7 @@ public class PlayerManager : MonoBehaviour
 
           if (beatManager == null)
           {
-               beatManager = FindFirstObjectByType<BeatManager>();
+               beatManager = FindFirstObjectByType<BeatSynchronizer>();
           }
 
           Intervals beatInterval = null;
