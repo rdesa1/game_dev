@@ -77,6 +77,12 @@ public class BeatSynchronizer : MonoBehaviour
           }
           isRumbling = false;
      }
+
+     // Get the music AudioSource
+     public AudioSource GetMusicSource()
+     {
+          return music;
+     }
 }
 
 /* This class represents an interval that triggers UnityEvents based on BPM timing. */
