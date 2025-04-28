@@ -5,6 +5,12 @@ public class ScoreManager : MonoBehaviour
      // Score array for 4 players (playerID 1 maps to index 0)
      public int[] playerScores = new int[4];
 
+     private void Awake()
+     {
+          // Prevent this ScoreManager from being destroyed when loading a new scene
+          DontDestroyOnLoad(gameObject);
+     }
+
      // Adds score for the given player object
      public void AddScore(GameObject player)
      {
