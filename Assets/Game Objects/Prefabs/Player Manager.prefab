@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8db2337c505c8940b45b9fc98dd3842, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnProtectionDuration: 2.5
   Player1: {fileID: 3078429089251229757, guid: 869f459429fbca4488571b0753fc0be4, type: 3}
   Player2: {fileID: 5690308704136693232, guid: fcee8d1b74e4579419d47f200a028e8a, type: 3}
   Player3: {fileID: 4420279453157322995, guid: cd31d4c20d125414b8674e48cf0d1abc, type: 3}
