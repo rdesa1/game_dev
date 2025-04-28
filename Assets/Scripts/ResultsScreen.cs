@@ -50,8 +50,16 @@ public class ResultsScreen : MonoBehaviour
 
      public void QuitToMainMenu()
      {
-          SceneManager.LoadScene("MainMenu");
+          ControllerManager.controllerList.Clear(); // Clear list of detected controllers
+          ControllerManager.controllerCount = 0; // Reset controller count
+
+          // Clear player setup
+          PlayerManager.numberOfPlayers = 0;
+          PlayerManager.playerPrefabList.Clear();
+
+          SceneManager.LoadScene("MainMenu"); // Load the Main Menu scene
      }
+
 
      private Color GetPlayerColor(int playerID)
      {
