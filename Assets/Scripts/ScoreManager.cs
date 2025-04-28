@@ -1,43 +1,31 @@
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-     public static ScoreManager Instance { get; private set; } // Singleton instance
+     // Score array for 4 players (playerID 1 maps to index 0)
+     public int[] playerScores = new int[4];
 
-     private Dictionary<GameObject, int> playerScores = new Dictionary<GameObject, int>(); // Stores player scores
-
-     private void Awake()
-     {
-          // Ensure only one instance of ScoreManager exists
-          if (Instance == null)
-          {
-               Instance = this;
-          }
-          else
-          {
-               Destroy(gameObject);
-          }
-     }
-
-     // Increments the score for a given player
+     // Adds score for the given player object
      public void AddScore(GameObject player)
      {
-          if (playerScores.ContainsKey(player))
+          PlayerController2D playerController = player.GetComponent<PlayerController2D>();
+          if (playerController != null)
           {
-               playerScores[player]++; // Increase existing player's score
+               int id = playerController.playerID;
+
+               if (id >= 1 && id <= 4)
+               {
+                    playerScores[id - 1]++; // ID 1 → index 0, ID 2 → index 1, etc.
+                    Debug.Log($"Player {id} scored! Total: {playerScores[id - 1]}");
+               }
+               else
+               {
+                    Debug.LogWarning("Player has invalid playerID! (Expected 1-4)");
+               }
           }
           else
           {
-               playerScores[player] = 1; // Initialize score for new player
+               Debug.LogWarning("PlayerController2D not found on player object!");
           }
-
-          Debug.Log($"{player.name} now has {playerScores[player]} points.");
-     }
-
-     // Retrieves the current score of a player
-     public int GetScore(GameObject player)
-     {
-          return playerScores.ContainsKey(player) ? playerScores[player] : 0;
      }
 }

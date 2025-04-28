@@ -1,5 +1,3 @@
-/* This script handles the player character prefab logic. */
-
 // Scenes: Game
 
 using UnityEngine;
@@ -8,7 +6,7 @@ using UnityEngine.InputSystem; // Import Unity's Input System
 
 public class PlayerController2D : MonoBehaviour
 {
-
+     public int playerID;
      public float moveSpeed = 100f;
      public Transform movePoint;
      public Rigidbody2D body;
@@ -64,31 +62,30 @@ public class PlayerController2D : MonoBehaviour
 
 
      /* The logic for how the character moves. 
-      * This is only triggered by the BeatManager, ensuring that the character moves on beat */
+  * This is only triggered by the BeatManager, ensuring that the character moves on beat */
      public void MoveCharacter()
      {
-          //Synchronizes all movement to for all systems.
+          // Synchronizes all movement for all systems.
           transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-          //Locks movement to either 1 unit vertically or horizontally.
+          // Locks movement to exactly 1 unit in any allowed direction (horizontal, vertical, or diagonal).
           if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
           {
-               if (Mathf.Abs(movementInput.x) == 1)
+               Vector3 moveDirection = new Vector3(movementInput.x, movementInput.y, 0f);
+
+               // Normalize diagonal movement so it's exactly 1 unit total
+               if (moveDirection.sqrMagnitude > 1)
                {
-                    //Checks collision ahead. If there's nothing, the player can move horizontally.
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(movementInput.x, 0f, 0f), 0.2f, whatStopsMovement))
-                    {
-                         movePoint.position += new Vector3(movementInput.x, 0f, 0f);
-                    }
+                    moveDirection.Normalize();
                }
 
-               else if (Mathf.Abs(movementInput.y) == 1)
+               // Round to the nearest whole number to keep grid movement
+               moveDirection = new Vector3(Mathf.Round(moveDirection.x), Mathf.Round(moveDirection.y), 0f);
+
+               // Checks collision ahead. If there's nothing, the player can move.
+               if (!Physics2D.OverlapCircle(movePoint.position + moveDirection, 0.2f, whatStopsMovement))
                {
-                    //Checks collision ahead. If there's nothing, the player can move vertically.
-                    if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, movementInput.y, 0f), 0.2f, whatStopsMovement))
-                    {
-                         movePoint.position += new Vector3(0f, movementInput.y, 0f);
-                    }
+                    movePoint.position += moveDirection;
                }
           }
 
@@ -98,6 +95,18 @@ public class PlayerController2D : MonoBehaviour
           if (directionSprites != null)
           {
                spriteRenderer.sprite = directionSprites[0];
+
+               // Also update BlinkSprite if it exists
+               Transform blinkTransform = transform.Find("BlinkSprite");
+               if (blinkTransform != null)
+               {
+                    SpriteRenderer blinkSpriteRenderer = blinkTransform.GetComponent<SpriteRenderer>();
+                    if (blinkSpriteRenderer != null)
+                    {
+                         blinkSpriteRenderer.sprite = directionSprites[0];
+                    }
+               }
           }
      }
+
 }
