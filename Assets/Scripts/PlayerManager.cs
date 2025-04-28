@@ -26,7 +26,6 @@ public class PlayerManager : MonoBehaviour
      [SerializeField] private GameObject Player4; // Prefab for player 4
 
      public static List<GameObject> playerPrefabList = new List<GameObject>(); // List that will contain some number of the above prefab player objects
-     public static Queue<GameObject> respawnQueue = new Queue<GameObject>(); // Queue for players awaiting respawn
 
      private static HashSet<GameObject> invinciblePlayers = new HashSet<GameObject>(); // Set of players currently under spawn protection
      private BeatSynchronizer beatManager; // Reference to BeatManager for syncing blinking to beats

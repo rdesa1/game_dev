@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement; // Add this
 
 public class CountdownTimer : MonoBehaviour
 {
@@ -43,6 +44,21 @@ public class CountdownTimer : MonoBehaviour
      void OnTimerEnd()
      {
           Debug.Log("Timer Ended!");
-          // Additional logic for when the timer reaches zero can be added here
+
+          ScoreManager scoreManager = FindFirstObjectByType<ScoreManager>(); // Find ScoreManager
+
+          if (scoreManager != null)
+          {
+               // Save the final scores
+               ResultsData.playerScoresCopy = scoreManager.playerScores;
+          }
+          else
+          {
+               Debug.LogWarning("ScoreManager not found. Cannot save final scores.");
+          }
+
+          // Load the Results scene
+          SceneManager.LoadScene("Results");
      }
+
 }
